@@ -2,499 +2,520 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pakkathukadai | Shop Local</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pakkathukadai | Shop Local</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<style>
+:root {
+  --green: #087443;
+  --dark: #065b35;
+  --bg: #f4f8f5;
+  --muted: #5b665f;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #f7f9f4;
-      color: #24352a;
-    }
+* { box-sizing: border-box; }
 
-    header {
-      background: #176b45;
-      color: white;
-      padding: 24px 7%;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: #17231c;
+}
 
-    header h1 {
-      font-size: 28px;
-    }
+header {
+  background: var(--green);
+  color: white;
+  padding: 24px max(20px, calc((100% - 1100px)/2));
+}
 
-    header p {
-      margin-top: 7px;
-      color: #e0f3e7;
-    }
+header h1 { margin: 0 0 6px; }
 
-    nav {
-      background: white;
-      padding: 16px 7%;
-      border-bottom: 1px solid #e2e8df;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
+main {
+  width: min(1100px, calc(100% - 32px));
+  margin: 26px auto;
+}
 
-    nav a {
-      color: #176b45;
-      text-decoration: none;
-      font-weight: bold;
-    }
+section { margin-bottom: 30px; }
+h2 { margin: 0 0 16px; }
 
-    main {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
+.intro, .cart-box, .product {
+  background: white;
+  border: 1px solid #e1e9e3;
+  border-radius: 14px;
+  padding: 18px;
+}
 
-    .hero {
-      background: #e1f2e5;
-      padding: 32px;
-      border-radius: 16px;
-    }
+.controls {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
 
-    .hero h2 {
-      font-size: 30px;
-      margin-bottom: 12px;
-    }
+input, select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccd8cf;
+  border-radius: 9px;
+  font-size: 16px;
+  background: white;
+}
 
-    .hero p {
-      line-height: 1.6;
-      margin-bottom: 18px;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
 
-    .search {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.emoji { font-size: 34px; }
+.product h3 { margin: 8px 0; }
+.muted { color: var(--muted); }
 
-    input {
-      flex: 1;
-      min-width: 150px;
-      padding: 12px;
-      border: 1px solid #b8cbb9;
-      border-radius: 8px;
-      font-size: 15px;
-    }
+.price, .total {
+  font-size: 21px;
+  font-weight: bold;
+  margin: 14px 0;
+}
 
-    button {
-      background: #176b45;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 11px 16px;
-      cursor: pointer;
-      font-size: 14px;
-    }
+button {
+  background: var(--green);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    button:hover {
-      background: #105435;
-    }
+button:hover { background: var(--dark); }
+button:disabled { opacity: .5; cursor: not-allowed; }
 
-    .section-title {
-      margin: 30px 0 16px;
-    }
+.status {
+  padding: 12px;
+  border-radius: 8px;
+  background: #e4f3e8;
+  margin-bottom: 18px;
+}
 
-    .shops, .products {
-      display: grid;
-      grid-template-columns: repeat(
-        auto-fit, minmax(210px, 1fr)
-      );
-      gap: 16px;
-    }
+.error {
+  background: #fff0ee;
+  color: #9f2418;
+}
 
-    .shop, .product, .cart-box {
-      background: white;
-      padding: 20px;
-      border: 1px solid #e2e8df;
-      border-radius: 12px;
-    }
+.cart-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5ece7;
+}
 
-    .shop p, .product p {
-      color: #657368;
-      line-height: 1.6;
-      margin: 8px 0 14px;
-    }
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .product .emoji {
-      font-size: 42px;
-      margin-bottom: 12px;
-    }
+.small { padding: 7px 11px; }
 
-    .price {
-      color: #176b45;
-      font-size: 20px;
-      font-weight: bold;
-      margin: 10px 0;
-    }
+footer {
+  text-align: center;
+  padding: 22px;
+  background: #e7efe9;
+  color: #425148;
+}
 
-    .cart-box {
-      margin-top: 20px;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8df;
-    }
-
-    .cart-item button {
-      padding: 6px 10px;
-    }
-
-    .total {
-      margin-top: 18px;
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .small-note {
-      font-size: 13px;
-      color: #657368;
-      margin-top: 10px;
-    }
-
-    footer {
-      margin-top: 45px;
-      background: #173e2c;
-      color: white;
-      text-align: center;
-      padding: 25px;
-      line-height: 1.8;
-    }
-
-    @media (max-width: 500px) {
-      .hero {
-        padding: 22px;
-      }
-
-      .hero h2 {
-        font-size: 25px;
-      }
-    }
-  </style>
+@media (max-width: 560px) {
+  .controls { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <h1>🛍️ Pakkathukadai</h1>
-    <p>Your neighbourhood. Your shops. Your community.</p>
-  </header>
+<header>
+  <h1>🛍️ Pakkathukadai</h1>
+  <p>Supporting Local. Building Community.</p>
+</header>
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#shops">Local Shops</a>
-    <a href="#products">Products</a>
-    <a href="#cart">My Cart (<span id="cartCount">0</span>)</a>
-  </nav>
+<main>
 
-  <main>
+  <div class="intro">
+    <h2>Shop from your neighbourhood</h2>
+    <p>Find everyday essentials from nearby shops in one place.</p>
+  </div>
 
-    <section class="hero" id="home">
-      <h2>Shop Local. Grow Together.</h2>
-      <p>
-        Discover nearby shops, explore everyday products,
-        and support your local community.
+  <div id="status" class="status">
+    Connecting to Supabase…
+  </div>
+
+  <section id="products">
+    <h2>Available Products</h2>
+
+    <div class="controls">
+      <input
+        id="searchInput"
+        placeholder="Search products or shops…"
+      >
+
+      <select id="shopFilter">
+        <option value="">All shops</option>
+      </select>
+    </div>
+
+    <div id="productGrid" class="grid">
+      <p>Loading products…</p>
+    </div>
+  </section>
+
+  <section id="cart">
+    <h2>Your Shopping Cart</h2>
+
+    <div class="cart-box">
+      <div id="cartItems">
+        <p class="muted">Your cart is empty.</p>
+      </div>
+
+      <div id="cartTotal" class="total">
+        Total: ₹0.00
+      </div>
+
+      <button id="orderButton">
+        Proceed to Order
+      </button>
+
+      <p class="muted">
+        Demo only: orders and payments are not connected yet.
       </p>
+    </div>
+  </section>
 
-      <div class="search">
-        <input id="searchInput"
-          type="text"
-          placeholder="Search shops or products..."
-          oninput="renderProducts()">
+  <section>
+    <h2>Why Pakkathukadai?</h2>
 
-        <button onclick="renderProducts()">
-          Search
-        </button>
-      </div>
-    </section>
-
-    <section id="shops">
-      <h2 class="section-title">Explore Local Shops</h2>
-
-      <div class="shops">
-        <article class="shop">
-          <h3>🥦 Fresh Mart</h3>
-          <p>Vegetables and fruits</p>
-          <button onclick="filterShop('Fresh Mart')">
-            View Products
-          </button>
-        </article>
-
-        <article class="shop">
-          <h3>🛒 Daily Needs Store</h3>
-          <p>Groceries and essentials</p>
-          <button onclick="filterShop('Daily Needs Store')">
-            View Products
-          </button>
-        </article>
-
-        <article class="shop">
-          <h3>🥛 Milk & More</h3>
-          <p>Milk and dairy products</p>
-          <button onclick="filterShop('Milk & More')">
-            View Products
-          </button>
-        </article>
-      </div>
-    </section>
-
-    <section id="products">
-      <h2 class="section-title">Available Products</h2>
-      <div class="products" id="productList"></div>
-      <p class="small-note">
-        Sample products and prices for demonstration.
-      </p>
-    </section>
-
-    <section id="cart">
-      <h2 class="section-title">Your Shopping Cart</h2>
-
-      <div class="cart-box">
-        <div id="cartItems">Your cart is empty.</div>
-
-        <p class="total">
-          Total: ₹<span id="cartTotal">0.00</span>
-        </p>
-
-        <button onclick="placeDemoOrder()">
-          Proceed to Order
-        </button>
-
-        <p class="small-note">
-          Demo only: orders are not sent to a shop yet.
-        </p>
-      </div>
-    </section>
-
-    <section id="about">
-      <h2 class="section-title">Why Pakkathukadai?</h2>
+    <div class="intro">
       <p>
         We connect customers with neighbourhood shops,
-        helping local businesses grow and making shopping easier.
+        helping local businesses reach more people and
+        making everyday shopping easier.
       </p>
-    </section>
+    </div>
+  </section>
 
-  </main>
+</main>
 
-  <footer>
-    <p>Supporting Local. Building Community.</p>
-    <p>© 2026 Pakkathukadai</p>
-  </footer>
+<footer>
+  <p>Supporting Local. Building Community.</p>
+  <p>© 2026 Pakkathukadai</p>
+</footer>
 
-  <script>
-    const products = [
-      {
-        id: 1,
-        name: "Tomatoes",
-        emoji: "🍅",
-        price: 40,
-        unit: "1 kg",
-        shop: "Fresh Mart"
-      },
-      {
-        id: 2,
-        name: "Potatoes",
-        emoji: "🥔",
-        price: 35,
-        unit: "1 kg",
-        shop: "Fresh Mart"
-      },
-      {
-        id: 3,
-        name: "Apples",
-        emoji: "🍎",
-        price: 120,
-        unit: "1 kg",
-        shop: "Fresh Mart"
-      },
-      {
-        id: 4,
-        name: "Rice",
-        emoji: "🍚",
-        price: 65,
-        unit: "1 kg",
-        shop: "Daily Needs Store"
-      },
-      {
-        id: 5,
-        name: "Cooking Oil",
-        emoji: "🫗",
-        price: 150,
-        unit: "1 litre",
-        shop: "Daily Needs Store"
-      },
-      {
-        id: 6,
-        name: "Milk",
-        emoji: "🥛",
-        price: 30,
-        unit: "500 ml",
-        shop: "Milk & More"
-      }
-    ];
-
-    const cart = {};
-
-    let selectedShop = "";
-
-    function renderProducts() {
-      const query = document
-        .getElementById("searchInput")
-        .value.toLowerCase()
-        .trim();
-
-      const filtered = products.filter(function(product) {
-        const matchesSearch =
-          product.name.toLowerCase().includes(query) ||
-          product.shop.toLowerCase().includes(query);
-
-        const matchesShop =
-          selectedShop === "" ||
-          product.shop === selectedShop;
-
-        return matchesSearch && matchesShop;
-      });
-
-      const list = document.getElementById("productList");
-
-      if (filtered.length === 0) {
-        list.innerHTML = "<p>No matching products found.</p>";
-        return;
-      }
-
-      list.innerHTML = filtered.map(function(product) {
-        return `
-          <article class="product">
-            <div class="emoji">${product.emoji}</div>
-            <h3>${product.name}</h3>
-            <p>${product.shop}</p>
-            <p>${product.unit}</p>
-            <div class="price">₹${product.price}</div>
-            <button onclick="addToCart(${product.id})">
-              Add to Cart
-            </button>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function filterShop(shopName) {
-      selectedShop = shopName;
-      document.getElementById("searchInput").value = "";
-      renderProducts();
-      document.getElementById("products").scrollIntoView();
-    }
-
-    function addToCart(id) {
-      if (!cart[id]) {
-        cart[id] = 0;
-      }
-
-      cart[id]++;
-      renderCart();
-    }
-
-    function changeQuantity(id, amount) {
-      cart[id] += amount;
-
-      if (cart[id] <= 0) {
-        delete cart[id];
-      }
-
-      renderCart();
-    }
-
-    function renderCart() {
-      const items = Object.keys(cart);
-      let total = 0;
-      let count = 0;
-
-      if (items.length === 0) {
-        document.getElementById("cartItems").textContent =
-          "Your cart is empty.";
-      } else {
-        document.getElementById("cartItems").innerHTML =
-          items.map(function(id) {
-            const product = products.find(
-              function(item) {
-                return item.id === Number(id);
-              }
-            );
-
-            const quantity = cart[id];
-            const subtotal = product.price * quantity;
-
-            total += subtotal;
-            count += quantity;
-
-            return `
-              <div class="cart-item">
-                <div>
-                  <strong>${product.name}</strong>
-                  <br>
-                  ₹${product.price} × ${quantity}
-                  = ₹${subtotal.toFixed(2)}
-                </div>
-                <div>
-                  <button onclick="changeQuantity(${id}, -1)">−</button>
-                  <button onclick="changeQuantity(${id}, 1)">+</button>
-                </div>
-              </div>
-            `;
-          }).join("");
-
-        // Count the quantities of all products.
-        count = items.reduce(function(sum, id) {
-          return sum + cart[id];
-        }, 0);
-      }
-
-      document.getElementById("cartCount").textContent = count;
-      document.getElementById("cartTotal").textContent =
-        total.toFixed(2);
-    }
-
-    function placeDemoOrder() {
-      if (Object.keys(cart).length === 0) {
-        alert("Please add products to your cart first.");
-        return;
-      }
-
-      alert(
-        "Your demo cart total is ₹" +
-        document.getElementById("cartTotal").textContent +
-        ". Real ordering will be connected to the backend later."
-      );
-    }
-
-    renderProducts();
-    renderCart();
-  </script>
-  
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const SUPABASE_URL = https://qjywimxvejnkfbatukut.supabase.co/rest/v1/
-  const SUPABASE_KEY = sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+// Replace these two values with your actual Supabase details.
+// Never use a service_role or secret key in public website code.
+
+const SUPABASE_URL = "https://qjywimxvejnkfbatukut.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
+
+// Use the exact table name shown in Supabase.
+// If your table is named products in lowercase, change this to "products".
+
+const TABLE_NAME = "Products";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let products = [];
+const cart = {};
+
+const $ = id => document.getElementById(id);
+
+function emoji(name) {
+  const n = (name || "").toLowerCase();
+
+  if (n.includes("tomato")) return "🍅";
+  if (n.includes("potato")) return "🥔";
+  if (n.includes("apple")) return "🍎";
+  if (n.includes("rice")) return "🍚";
+  if (n.includes("oil")) return "🫗";
+  if (n.includes("milk")) return "🥛";
+  if (n.includes("onion")) return "🧅";
+  if (n.includes("banana")) return "🍌";
+
+  return "🛒";
+}
+
+function status(message, error = false) {
+  $("status").textContent = message;
+  $("status").classList.toggle("error", error);
+}
+
+function renderShops() {
+  const old = $("shopFilter").value;
+
+  const shops = [
+    ...new Set(products.map(p => p.shop_name).filter(Boolean))
+  ].sort();
+
+  $("shopFilter").innerHTML =
+    '<option value="">All shops</option>';
+
+  shops.forEach(shop => {
+    const option = document.createElement("option");
+    option.value = shop;
+    option.textContent = shop;
+    $("shopFilter").appendChild(option);
+  });
+
+  if (shops.includes(old)) {
+    $("shopFilter").value = old;
+  }
+}
+
+function renderProducts() {
+  const query = $("searchInput").value.trim().toLowerCase();
+  const selectedShop = $("shopFilter").value;
+
+  const list = products.filter(product => {
+    const matchesSearch =
+      String(product.name || "").toLowerCase().includes(query) ||
+      String(product.shop_name || "").toLowerCase().includes(query);
+
+    const matchesShop =
+      !selectedShop || product.shop_name === selectedShop;
+
+    return matchesSearch && matchesShop;
+  });
+
+  const grid = $("productGrid");
+  grid.innerHTML = "";
+
+  if (!list.length) {
+    grid.textContent = "No matching products found.";
+    return;
+  }
+
+  list.forEach(product => {
+    const card = document.createElement("article");
+    card.className = "product";
+
+    const icon = document.createElement("div");
+    icon.className = "emoji";
+    icon.textContent = emoji(product.name);
+
+    const title = document.createElement("h3");
+    title.textContent = product.name;
+
+    const shop = document.createElement("p");
+    shop.className = "muted";
+    shop.textContent = product.shop_name || "Local shop";
+
+    const unit = document.createElement("p");
+    unit.className = "muted";
+    unit.textContent = product.unit || "per item";
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent =
+      "₹" + Number(product.price || 0).toFixed(2);
+
+    const stock = document.createElement("p");
+    stock.className = "muted";
+    stock.textContent =
+      "Available: " +
+      Number(product.quantity || 0) +
+      " " + (product.unit || "items");
+
+    const button = document.createElement("button");
+    button.textContent =
+      Number(product.quantity) > 0
+        ? "Add to Cart"
+        : "Out of stock";
+
+    button.disabled = Number(product.quantity) <= 0;
+    button.onclick = () => add(product.id);
+
+    card.append(icon, title, shop, unit, price, stock, button);
+    grid.appendChild(card);
+  });
+}
+
+function add(id) {
+  const product = products.find(
+    p => String(p.id) === String(id)
   );
+
+  if (!product) return;
+
+  if ((cart[id] || 0) >= Number(product.quantity || 0)) {
+    alert("No more stock available.");
+    return;
+  }
+
+  cart[id] = (cart[id] || 0) + 1;
+  renderCart();
+}
+
+function change(id, amount) {
+  const product = products.find(
+    p => String(p.id) === String(id)
+  );
+
+  if (!product) return;
+
+  const next = (cart[id] || 0) + amount;
+
+  if (next <= 0) {
+    delete cart[id];
+  } else if (next > Number(product.quantity || 0)) {
+    alert("Only " + product.quantity + " available.");
+  } else {
+    cart[id] = next;
+  }
+
+  renderCart();
+}
+
+function renderCart() {
+  const box = $("cartItems");
+  box.innerHTML = "";
+
+  let total = 0;
+
+  const rows = Object.entries(cart).filter(
+    ([, quantity]) => quantity > 0
+  );
+
+  if (!rows.length) {
+    box.innerHTML =
+      '<p class="muted">Your cart is empty.</p>';
+  }
+
+  rows.forEach(([id, quantity]) => {
+    const product = products.find(
+      p => String(p.id) === String(id)
+    );
+
+    if (!product) return;
+
+    const sum = Number(product.price || 0) * quantity;
+    total += sum;
+
+    const row = document.createElement("div");
+    row.className = "cart-row";
+
+    const details = document.createElement("div");
+
+    const name = document.createElement("strong");
+    name.textContent = product.name;
+
+    const line = document.createElement("div");
+    line.className = "muted";
+    line.textContent =
+      "₹" + Number(product.price).toFixed(2) +
+      " × " + quantity + " = ₹" + sum.toFixed(2);
+
+    details.append(name, line);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const minus = document.createElement("button");
+    minus.className = "small";
+    minus.textContent = "−";
+    minus.onclick = () => change(id, -1);
+
+    const count = document.createElement("span");
+    count.textContent = quantity;
+
+    const plus = document.createElement("button");
+    plus.className = "small";
+    plus.textContent = "+";
+    plus.onclick = () => change(id, 1);
+
+    actions.append(minus, count, plus);
+    row.append(details, actions);
+    box.appendChild(row);
+  });
+
+  $("cartTotal").textContent =
+    "Total: ₹" + total.toFixed(2);
+}
+
+async function loadProducts() {
+  if (
+    SUPABASE_URL.includes("YOUR_SUPABASE") ||
+    SUPABASE_KEY.includes("YOUR_SUPABASE")
+  ) {
+    status(
+      "Setup needed: add your Supabase URL and publishable key.",
+      true
+    );
+
+    $("productGrid").textContent =
+      "Please add your Supabase Project URL and publishable key.";
+
+    return;
+  }
+
+  status("Loading products from Supabase…");
+
+  const { data, error } = await db
+    .from(TABLE_NAME)
+    .select("id, name, price, quantity, shop_name, unit")
+    .order("id");
+
+  if (error) {
+    console.error(error);
+
+    status(
+      "Could not load products: " + error.message +
+      ". Check table name and SELECT policy.",
+      true
+    );
+
+    $("productGrid").textContent =
+      "Products could not be loaded. Check the Supabase table name and read-access policy.";
+
+    return;
+  }
+
+  products = (data || []).map(product => ({
+    ...product,
+    price: Number(product.price || 0),
+    quantity: Number(product.quantity || 0)
+  }));
+
+  renderShops();
+  renderProducts();
+  renderCart();
+
+  status(
+    "Connected to Supabase. Loaded " +
+    products.length + " product(s)."
+  );
+}
+
+$("searchInput").addEventListener("input", renderProducts);
+
+$("shopFilter").addEventListener("change", renderProducts);
+
+$("orderButton").onclick = () => {
+  alert(
+    Object.keys(cart).length
+      ? "Demo only: order placement is not connected yet."
+      : "Your cart is empty. Add a product first."
+  );
+};
+
+loadProducts();
+
 </script>
 </body>
 </html>
