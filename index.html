@@ -1,66 +1,521 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pakkathukadai | Shop Local</title>
+
+<style>
+:root {
+  --green: #087443;
+  --dark: #065b35;
+  --bg: #f4f8f5;
+  --muted: #5b665f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: #17231c;
+}
+
+header {
+  background: var(--green);
+  color: white;
+  padding: 24px max(20px, calc((100% - 1100px)/2));
+}
+
+header h1 { margin: 0 0 6px; }
+
+main {
+  width: min(1100px, calc(100% - 32px));
+  margin: 26px auto;
+}
+
+section { margin-bottom: 30px; }
+h2 { margin: 0 0 16px; }
+
+.intro, .cart-box, .product {
+  background: white;
+  border: 1px solid #e1e9e3;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+input, select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ccd8cf;
+  border-radius: 9px;
+  font-size: 16px;
+  background: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.emoji { font-size: 34px; }
+.product h3 { margin: 8px 0; }
+.muted { color: var(--muted); }
+
+.price, .total {
+  font-size: 21px;
+  font-weight: bold;
+  margin: 14px 0;
+}
+
+button {
+  background: var(--green);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover { background: var(--dark); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+.status {
+  padding: 12px;
+  border-radius: 8px;
+  background: #e4f3e8;
+  margin-bottom: 18px;
+}
+
+.error {
+  background: #fff0ee;
+  color: #9f2418;
+}
+
+.cart-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5ece7;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.small { padding: 7px 11px; }
+
+footer {
+  text-align: center;
+  padding: 22px;
+  background: #e7efe9;
+  color: #425148;
+}
+
+@media (max-width: 560px) {
+  .controls { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛍️ Pakkathukadai</h1>
+  <p>Supporting Local. Building Community.</p>
+</header>
+
+<main>
+
+  <div class="intro">
+    <h2>Shop from your neighbourhood</h2>
+    <p>Find everyday essentials from nearby shops in one place.</p>
+  </div>
+
+  <div id="status" class="status">
+    Connecting to Supabase…
+  </div>
+
+  <section id="products">
+    <h2>Available Products</h2>
+
+    <div class="controls">
+      <input
+        id="searchInput"
+        placeholder="Search products or shops…"
+      >
+
+      <select id="shopFilter">
+        <option value="">All shops</option>
+      </select>
+    </div>
+
+    <div id="productGrid" class="grid">
+      <p>Loading products…</p>
+    </div>
+  </section>
+
+  <section id="cart">
+    <h2>Your Shopping Cart</h2>
+
+    <div class="cart-box">
+      <div id="cartItems">
+        <p class="muted">Your cart is empty.</p>
+      </div>
+
+      <div id="cartTotal" class="total">
+        Total: ₹0.00
+      </div>
+
+      <button id="orderButton">
+        Proceed to Order
+      </button>
+
+      <p class="muted">
+        Demo only: orders and payments are not connected yet.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why Pakkathukadai?</h2>
+
+    <div class="intro">
+      <p>
+        We connect customers with neighbourhood shops,
+        helping local businesses reach more people and
+        making everyday shopping easier.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Supporting Local. Building Community.</p>
+  <p>© 2026 Pakkathukadai</p>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const SUPABASE_URL =
-    "https://qjywimxvejnkfbatukut.supabase.co";
 
-  const SUPABASE_KEY =
-    "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
+// Replace these two values with your actual Supabase details.
+// Never use a service_role or secret key in public website code.
 
-  const TABLE_NAME = "Products";
+const SUPABASE_URL = "https://qjywimxvejnkfbatukut.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+// Use the exact table name shown in Supabase.
+// If your table is named products in lowercase, change this to "products".
 
-  async function loadProducts() {
-    const status = document.getElementById("status");
-    const productsBox = document.getElementById("products");
+const TABLE_NAME = "Products";
 
-    try {
-      status.textContent = "Connecting to Supabase...";
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-      const { data, error } = await supabaseClient
-        .from(TABLE_NAME)
-        .select("*");
+let products = [];
+const cart = {};
 
-      if (error) throw error;
+const $ = id => document.getElementById(id);
 
-      status.textContent =
-        "Connected successfully. Products loaded: " + data.length;
+function emoji(name) {
+  const n = (name || "").toLowerCase();
 
-      productsBox.replaceChildren();
+  if (n.includes("tomato")) return "🍅";
+  if (n.includes("potato")) return "🥔";
+  if (n.includes("apple")) return "🍎";
+  if (n.includes("rice")) return "🍚";
+  if (n.includes("oil")) return "🫗";
+  if (n.includes("milk")) return "🥛";
+  if (n.includes("onion")) return "🧅";
+  if (n.includes("banana")) return "🍌";
 
-      data.forEach(product => {
-        const card = document.createElement("div");
-        card.className = "product";
+  return "🛒";
+}
 
-        const name = document.createElement("h3");
-        name.textContent = product.name || "Unnamed product";
+function status(message, error = false) {
+  $("status").textContent = message;
+  $("status").classList.toggle("error", error);
+}
 
-        const shop = document.createElement("p");
-        shop.textContent = "Shop: " + (product.shop_name || "Local shop");
+function renderShops() {
+  const old = $("shopFilter").value;
 
-        const price = document.createElement("p");
-        price.textContent = "Price: ₹" + (product.price ?? 0);
+  const shops = [
+    ...new Set(products.map(p => p.shop_name).filter(Boolean))
+  ].sort();
 
-        const quantity = document.createElement("p");
-        quantity.textContent =
-          "Available: " + (product.quantity ?? 0) +
-          (product.unit ? " " + product.unit : "");
+  $("shopFilter").innerHTML =
+    '<option value="">All shops</option>';
 
-        card.append(name, shop, price, quantity);
-        productsBox.appendChild(card);
-      });
+  shops.forEach(shop => {
+    const option = document.createElement("option");
+    option.value = shop;
+    option.textContent = shop;
+    $("shopFilter").appendChild(option);
+  });
 
-    } catch (error) {
-      console.error("Supabase error:", error);
-      status.textContent = "Could not load products: " + error.message;
-      productsBox.textContent = "Please check the table name and SELECT policy.";
-    }
+  if (shops.includes(old)) {
+    $("shopFilter").value = old;
+  }
+}
+
+function renderProducts() {
+  const query = $("searchInput").value.trim().toLowerCase();
+  const selectedShop = $("shopFilter").value;
+
+  const list = products.filter(product => {
+    const matchesSearch =
+      String(product.name || "").toLowerCase().includes(query) ||
+      String(product.shop_name || "").toLowerCase().includes(query);
+
+    const matchesShop =
+      !selectedShop || product.shop_name === selectedShop;
+
+    return matchesSearch && matchesShop;
+  });
+
+  const grid = $("productGrid");
+  grid.innerHTML = "";
+
+  if (!list.length) {
+    grid.textContent = "No matching products found.";
+    return;
   }
 
-  loadProducts();
+  list.forEach(product => {
+    const card = document.createElement("article");
+    card.className = "product";
+
+    const icon = document.createElement("div");
+    icon.className = "emoji";
+    icon.textContent = emoji(product.name);
+
+    const title = document.createElement("h3");
+    title.textContent = product.name;
+
+    const shop = document.createElement("p");
+    shop.className = "muted";
+    shop.textContent = product.shop_name || "Local shop";
+
+    const unit = document.createElement("p");
+    unit.className = "muted";
+    unit.textContent = product.unit || "per item";
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent =
+      "₹" + Number(product.price || 0).toFixed(2);
+
+    const stock = document.createElement("p");
+    stock.className = "muted";
+    stock.textContent =
+      "Available: " +
+      Number(product.quantity || 0) +
+      " " + (product.unit || "items");
+
+    const button = document.createElement("button");
+    button.textContent =
+      Number(product.quantity) > 0
+        ? "Add to Cart"
+        : "Out of stock";
+
+    button.disabled = Number(product.quantity) <= 0;
+    button.onclick = () => add(product.id);
+
+    card.append(icon, title, shop, unit, price, stock, button);
+    grid.appendChild(card);
+  });
+}
+
+function add(id) {
+  const product = products.find(
+    p => String(p.id) === String(id)
+  );
+
+  if (!product) return;
+
+  if ((cart[id] || 0) >= Number(product.quantity || 0)) {
+    alert("No more stock available.");
+    return;
+  }
+
+  cart[id] = (cart[id] || 0) + 1;
+  renderCart();
+}
+
+function change(id, amount) {
+  const product = products.find(
+    p => String(p.id) === String(id)
+  );
+
+  if (!product) return;
+
+  const next = (cart[id] || 0) + amount;
+
+  if (next <= 0) {
+    delete cart[id];
+  } else if (next > Number(product.quantity || 0)) {
+    alert("Only " + product.quantity + " available.");
+  } else {
+    cart[id] = next;
+  }
+
+  renderCart();
+}
+
+function renderCart() {
+  const box = $("cartItems");
+  box.innerHTML = "";
+
+  let total = 0;
+
+  const rows = Object.entries(cart).filter(
+    ([, quantity]) => quantity > 0
+  );
+
+  if (!rows.length) {
+    box.innerHTML =
+      '<p class="muted">Your cart is empty.</p>';
+  }
+
+  rows.forEach(([id, quantity]) => {
+    const product = products.find(
+      p => String(p.id) === String(id)
+    );
+
+    if (!product) return;
+
+    const sum = Number(product.price || 0) * quantity;
+    total += sum;
+
+    const row = document.createElement("div");
+    row.className = "cart-row";
+
+    const details = document.createElement("div");
+
+    const name = document.createElement("strong");
+    name.textContent = product.name;
+
+    const line = document.createElement("div");
+    line.className = "muted";
+    line.textContent =
+      "₹" + Number(product.price).toFixed(2) +
+      " × " + quantity + " = ₹" + sum.toFixed(2);
+
+    details.append(name, line);
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const minus = document.createElement("button");
+    minus.className = "small";
+    minus.textContent = "−";
+    minus.onclick = () => change(id, -1);
+
+    const count = document.createElement("span");
+    count.textContent = quantity;
+
+    const plus = document.createElement("button");
+    plus.className = "small";
+    plus.textContent = "+";
+    plus.onclick = () => change(id, 1);
+
+    actions.append(minus, count, plus);
+    row.append(details, actions);
+    box.appendChild(row);
+  });
+
+  $("cartTotal").textContent =
+    "Total: ₹" + total.toFixed(2);
+}
+
+async function loadProducts() {
+  if (
+    SUPABASE_URL.includes("YOUR_SUPABASE") ||
+    SUPABASE_KEY.includes("YOUR_SUPABASE")
+  ) {
+    status(
+      "Setup needed: add your Supabase URL and publishable key.",
+      true
+    );
+
+    $("productGrid").textContent =
+      "Please add your Supabase Project URL and publishable key.";
+
+    return;
+  }
+
+  status("Loading products from Supabase…");
+
+  const { data, error } = await db
+    .from(TABLE_NAME)
+    .select("id, name, price, quantity, shop_name, unit")
+    .order("id");
+
+  if (error) {
+    console.error(error);
+
+    status(
+      "Could not load products: " + error.message +
+      ". Check table name and SELECT policy.",
+      true
+    );
+
+    $("productGrid").textContent =
+      "Products could not be loaded. Check the Supabase table name and read-access policy.";
+
+    return;
+  }
+
+  products = (data || []).map(product => ({
+    ...product,
+    price: Number(product.price || 0),
+    quantity: Number(product.quantity || 0)
+  }));
+
+  renderShops();
+  renderProducts();
+  renderCart();
+
+  status(
+    "Connected to Supabase. Loaded " +
+    products.length + " product(s)."
+  );
+}
+
+$("searchInput").addEventListener("input", renderProducts);
+
+$("shopFilter").addEventListener("change", renderProducts);
+
+$("orderButton").onclick = () => {
+  alert(
+    Object.keys(cart).length
+      ? "Demo only: order placement is not connected yet."
+      : "Your cart is empty. Add a product first."
+  );
+};
+
+loadProducts();
+
 </script>
+</body>
+</html>
