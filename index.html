@@ -1,543 +1,66 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pakkathu Kadai | Neighbourhood Shopping</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<script>
+  const SUPABASE_URL =
+    "https://qjywimxvejnkfbatukut.supabase.co";
 
-    body {
-      margin: 0;
-      padding: 16px;
-      font-family: Arial, sans-serif;
-      color: #172b24;
-      background: #f3f8f5;
-    }
+  const SUPABASE_KEY =
+    "PASTE_YOUR_ACTUAL_SB_PUBLISHABLE_KEY_HERE";
 
-    header {
-      padding: 24px;
-      background: white;
-      border: 1px solid #d9e6dd;
-      border-radius: 18px;
-      margin-bottom: 12px;
-    }
+  const TABLE_NAME = "Products";
 
-    header h1 {
-      margin: 0 0 12px;
-      font-size: 30px;
-    }
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-    header p {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.5;
-    }
-
-    .status {
-      padding: 12px;
-      margin: 10px 0 20px;
-      border-radius: 10px;
-      background: #e4f5e9;
-      color: #17663c;
-      overflow-wrap: anywhere;
-    }
-
-    .status.error {
-      background: #fff0ee;
-      color: #b42318;
-    }
-
-    h2 {
-      margin-top: 24px;
-      font-size: 27px;
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 15px;
-      font-size: 16px;
-      border: 1px solid #cbd9cf;
-      border-radius: 12px;
-      background: white;
-    }
-
-    #products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .product {
-      padding: 18px;
-      background: white;
-      border: 1px solid #dce7df;
-      border-radius: 14px;
-    }
-
-    .product h3 {
-      margin: 0 0 10px;
-      font-size: 21px;
-    }
-
-    .shop {
-      color: #63756a;
-      margin: 8px 0;
-    }
-
-    .price {
-      font-weight: bold;
-      font-size: 20px;
-      margin: 12px 0;
-    }
-
-    button {
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 8px;
-      background: #087443;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #065b35;
-    }
-
-    button:disabled {
-      background: #9ca9a0;
-      cursor: not-allowed;
-    }
-
-    .cart {
-      background: white;
-      border: 1px solid #dce7df;
-      border-radius: 16px;
-      padding: 22px;
-      margin-top: 20px;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid #e5ebe6;
-    }
-
-    .quantity-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .quantity-controls button {
-      padding: 7px 12px;
-    }
-
-    .total {
-      font-size: 25px;
-      font-weight: bold;
-      margin: 20px 0;
-    }
-
-    .note {
-      color: #63756a;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 600px) {
-      .filters {
-        grid-template-columns: 1fr;
-      }
-
-      header h1 {
-        font-size: 25px;
-      }
-
-      .cart-item {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <header>
-    <h1>Shop from your neighbourhood</h1>
-    <p>Find everyday essentials from nearby shops in one place.</p>
-  </header>
-
-  <div id="status" class="status">Connecting to Supabase...</div>
-
-  <h2>Available Products</h2>
-
-  <div class="filters">
-    <input
-      id="search"
-      type="search"
-      placeholder="Search products or shops..."
-      aria-label="Search products or shops"
-    >
-
-    <select id="shopFilter" aria-label="Filter by shop">
-      <option value="">All shops</option>
-    </select>
-  </div>
-
-  <div id="products">
-    <p>Loading products...</p>
-  </div>
-
-  <h2>Your Shopping Cart</h2>
-
-  <div class="cart">
-    <div id="cartItems">Your cart is empty.</div>
-    <div class="total">Total: ₹<span id="total">0.00</span></div>
-    <button id="orderButton" type="button">Proceed to Order</button>
-    <p class="note">
-      Demo only: orders and payments are not connected yet.
-    </p>
-  </div>
-
-  <!-- Supabase client library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    // Supabase project configuration
-    const SUPABASE_URL =
-      "https://qjywimxvejnkfbatukut.supabase.co";
-
-    // Replace this placeholder with your own Supabase publishable key.
-    const SUPABASE_KEY =
-      "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
-
-    // Use the exact table name shown in Supabase Table Editor.
-    const TABLE_NAME = "Products";
-
-    const statusBox = document.getElementById("status");
+  async function loadProducts() {
+    const status = document.getElementById("status");
     const productsBox = document.getElementById("products");
-    const searchInput = document.getElementById("search");
-    const shopFilter = document.getElementById("shopFilter");
-    const cartItemsBox = document.getElementById("cartItems");
-    const totalBox = document.getElementById("total");
-    const orderButton = document.getElementById("orderButton");
 
-    let supabaseClient;
-    let products = [];
-    const cart = {};
+    try {
+      status.textContent = "Connecting to Supabase...";
 
-    function showStatus(message, isError = false) {
-      statusBox.textContent = message;
-      statusBox.className = isError ? "status error" : "status";
-    }
+      const { data, error } = await supabaseClient
+        .from(TABLE_NAME)
+        .select("*");
 
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]);
-    }
+      if (error) throw error;
 
-    async function loadProducts() {
-      try {
-        if (
-          !window.supabase ||
-          !window.supabase.createClient
-        ) {
-          throw new Error("Supabase library did not load. Check your internet connection.");
-        }
-
-        if (
-          !SUPABASE_KEY ||
-          SUPABASE_KEY === "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE"
-        ) {
-          throw new Error("Add your Supabase publishable key in the code.");
-        }
-
-        supabaseClient = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_KEY
-        );
-
-        const { data, error } = await supabaseClient
-          .from(TABLE_NAME)
-          .select("id, name, price, quantity, shop_name, unit")
-          .order("name");
-
-        if (error) {
-          throw error;
-        }
-
-        products = data || [];
-
-        showStatus(
-          "Connected to Supabase. Loaded " +
-          products.length + " product(s)."
-        );
-
-        populateShopFilter();
-        renderProducts();
-        renderCart();
-
-      } catch (error) {
-        console.error("Supabase product loading error:", error);
-
-        showStatus(
-          "Could not load products: " +
-          (error.message || "Unknown error") +
-          ". Check Project URL, table name and SELECT policy.",
-          true
-        );
-
-        productsBox.textContent =
-          "Products could not be loaded. Check the error above.";
-      }
-    }
-
-    function populateShopFilter() {
-      const selectedShop = shopFilter.value;
-
-      const shops = [
-        ...new Set(
-          products
-            .map(product => product.shop_name)
-            .filter(Boolean)
-        )
-      ].sort();
-
-      shopFilter.replaceChildren();
-
-      const allOption = document.createElement("option");
-      allOption.value = "";
-      allOption.textContent = "All shops";
-      shopFilter.appendChild(allOption);
-
-      shops.forEach(shop => {
-        const option = document.createElement("option");
-        option.value = shop;
-        option.textContent = shop;
-        shopFilter.appendChild(option);
-      });
-
-      if (shops.includes(selectedShop)) {
-        shopFilter.value = selectedShop;
-      }
-    }
-
-    function renderProducts() {
-      const searchTerm = searchInput.value
-        .trim()
-        .toLowerCase();
-
-      const selectedShop = shopFilter.value;
-
-      const filtered = products.filter(product => {
-        const matchesSearch =
-          String(product.name || "")
-            .toLowerCase()
-            .includes(searchTerm) ||
-          String(product.shop_name || "")
-            .toLowerCase()
-            .includes(searchTerm);
-
-        const matchesShop =
-          !selectedShop ||
-          product.shop_name === selectedShop;
-
-        return matchesSearch && matchesShop;
-      });
+      status.textContent =
+        "Connected successfully. Products loaded: " + data.length;
 
       productsBox.replaceChildren();
 
-      if (filtered.length === 0) {
-        const message = document.createElement("p");
-        message.textContent = products.length
-          ? "No matching products found."
-          : "No products are available in the table yet.";
-
-        productsBox.appendChild(message);
-        return;
-      }
-
-      filtered.forEach(product => {
-        const card = document.createElement("article");
+      data.forEach(product => {
+        const card = document.createElement("div");
         card.className = "product";
 
-        const heading = document.createElement("h3");
-        heading.textContent = product.name || "Unnamed product";
+        const name = document.createElement("h3");
+        name.textContent = product.name || "Unnamed product";
 
         const shop = document.createElement("p");
-        shop.className = "shop";
-        shop.textContent = product.shop_name || "Local shop";
+        shop.textContent = "Shop: " + (product.shop_name || "Local shop");
 
         const price = document.createElement("p");
-        price.className = "price";
-        price.textContent =
-          "₹" + Number(product.price || 0).toFixed(2) +
-          (product.unit ? " / " + product.unit : "");
+        price.textContent = "Price: ₹" + (product.price ?? 0);
 
-        const stock = document.createElement("p");
-        stock.textContent =
-          "Available: " + Number(product.quantity || 0) +
+        const quantity = document.createElement("p");
+        quantity.textContent =
+          "Available: " + (product.quantity ?? 0) +
           (product.unit ? " " + product.unit : "");
 
-        const addButton = document.createElement("button");
-        addButton.type = "button";
-        addButton.textContent = "Add to Cart";
-
-        const available = Number(product.quantity || 0);
-        addButton.disabled = available <= 0;
-
-        addButton.addEventListener("click", () => {
-          addToCart(product.id);
-        });
-
-        card.append(heading, shop, price, stock, addButton);
+        card.append(name, shop, price, quantity);
         productsBox.appendChild(card);
       });
+
+    } catch (error) {
+      console.error("Supabase error:", error);
+      status.textContent = "Could not load products: " + error.message;
+      productsBox.textContent = "Please check the table name and SELECT policy.";
     }
+  }
 
-    function addToCart(id) {
-      const product = products.find(
-        item => String(item.id) === String(id)
-      );
-
-      if (!product) return;
-
-      const available = Number(product.quantity || 0);
-      const current = cart[id] || 0;
-
-      if (current >= available) {
-        alert("You cannot add more than the available quantity.");
-        return;
-      }
-
-      cart[id] = current + 1;
-      renderCart();
-    }
-
-    function changeQuantity(id, change) {
-      const product = products.find(
-        item => String(item.id) === String(id)
-      );
-
-      if (!product) return;
-
-      const nextQuantity = (cart[id] || 0) + change;
-      const available = Number(product.quantity || 0);
-
-      if (nextQuantity <= 0) {
-        delete cart[id];
-      } else if (nextQuantity <= available) {
-        cart[id] = nextQuantity;
-      } else {
-        alert("Only " + available + " available.");
-      }
-
-      renderCart();
-    }
-
-    function renderCart() {
-      cartItemsBox.replaceChildren();
-
-      const cartEntries = Object.entries(cart)
-        .filter(([, quantity]) => quantity > 0);
-
-      if (cartEntries.length === 0) {
-        cartItemsBox.textContent = "Your cart is empty.";
-        totalBox.textContent = "0.00";
-        return;
-      }
-
-      let total = 0;
-
-      cartEntries.forEach(([id, quantity]) => {
-        const product = products.find(
-          item => String(item.id) === String(id)
-        );
-
-        if (!product) return;
-
-        const price = Number(product.price || 0);
-        total += price * quantity;
-
-        const row = document.createElement("div");
-        row.className = "cart-item";
-
-        const details = document.createElement("div");
-        const name = document.createElement("strong");
-        name.textContent = product.name;
-
-        const subtotal = document.createElement("div");
-        subtotal.textContent =
-          "₹" + (price * quantity).toFixed(2);
-
-        details.append(name, document.createElement("br"), subtotal);
-
-        const controls = document.createElement("div");
-        controls.className = "quantity-controls";
-
-        const minus = document.createElement("button");
-        minus.type = "button";
-        minus.textContent = "−";
-        minus.setAttribute("aria-label", "Decrease quantity");
-        minus.addEventListener("click", () => {
-          changeQuantity(id, -1);
-        });
-
-        const count = document.createElement("span");
-        count.textContent = String(quantity);
-
-        const plus = document.createElement("button");
-        plus.type = "button";
-        plus.textContent = "+";
-        plus.setAttribute("aria-label", "Increase quantity");
-        plus.addEventListener("click", () => {
-          changeQuantity(id, 1);
-        });
-
-        controls.append(minus, count, plus);
-        row.append(details, controls);
-        cartItemsBox.appendChild(row);
-      });
-
-      totalBox.textContent = total.toFixed(2);
-    }
-
-    searchInput.addEventListener("input", renderProducts);
-    shopFilter.addEventListener("change", renderProducts);
-
-    orderButton.addEventListener("click", () => {
-      if (Object.keys(cart).length === 0) {
-        alert("Your cart is empty. Add a product first.");
-        return;
-      }
-
-      alert(
-        "Your cart is ready! Online ordering is not connected yet."
-      );
-    });
-
-    loadProducts();
-  </script>
-</body>
-</html>
+  loadProducts();
+</script>
