@@ -2,520 +2,542 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pakkathukadai | Shop Local</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pakkathu Kadai | Neighbourhood Shopping</title>
 
-<style>
-:root {
-  --green: #087443;
-  --dark: #065b35;
-  --bg: #f4f8f5;
-  --muted: #5b665f;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-* { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Arial, sans-serif;
+      color: #172b24;
+      background: #f3f8f5;
+    }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: #17231c;
-}
+    header {
+      padding: 24px;
+      background: white;
+      border: 1px solid #d9e6dd;
+      border-radius: 18px;
+      margin-bottom: 12px;
+    }
 
-header {
-  background: var(--green);
-  color: white;
-  padding: 24px max(20px, calc((100% - 1100px)/2));
-}
+    header h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+    }
 
-header h1 { margin: 0 0 6px; }
+    header p {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
 
-main {
-  width: min(1100px, calc(100% - 32px));
-  margin: 26px auto;
-}
+    .status {
+      padding: 12px;
+      margin: 10px 0 20px;
+      border-radius: 10px;
+      background: #e4f5e9;
+      color: #17663c;
+      overflow-wrap: anywhere;
+    }
 
-section { margin-bottom: 30px; }
-h2 { margin: 0 0 16px; }
+    .status.error {
+      background: #fff0ee;
+      color: #b42318;
+    }
 
-.intro, .cart-box, .product {
-  background: white;
-  border: 1px solid #e1e9e3;
-  border-radius: 14px;
-  padding: 18px;
-}
+    h2 {
+      margin-top: 24px;
+      font-size: 27px;
+    }
 
-.controls {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
+    .filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
 
-input, select {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #ccd8cf;
-  border-radius: 9px;
-  font-size: 16px;
-  background: white;
-}
+    input, select {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #cbd9cf;
+      border-radius: 12px;
+      background: white;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
+    #products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
 
-.emoji { font-size: 34px; }
-.product h3 { margin: 8px 0; }
-.muted { color: var(--muted); }
+    .product {
+      padding: 18px;
+      background: white;
+      border: 1px solid #dce7df;
+      border-radius: 14px;
+    }
 
-.price, .total {
-  font-size: 21px;
-  font-weight: bold;
-  margin: 14px 0;
-}
+    .product h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
 
-button {
-  background: var(--green);
-  color: white;
-  border: 0;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .shop {
+      color: #63756a;
+      margin: 8px 0;
+    }
 
-button:hover { background: var(--dark); }
-button:disabled { opacity: .5; cursor: not-allowed; }
+    .price {
+      font-weight: bold;
+      font-size: 20px;
+      margin: 12px 0;
+    }
 
-.status {
-  padding: 12px;
-  border-radius: 8px;
-  background: #e4f3e8;
-  margin-bottom: 18px;
-}
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #087443;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.error {
-  background: #fff0ee;
-  color: #9f2418;
-}
+    button:hover {
+      background: #065b35;
+    }
 
-.cart-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #e5ece7;
-}
+    button:disabled {
+      background: #9ca9a0;
+      cursor: not-allowed;
+    }
 
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+    .cart {
+      background: white;
+      border: 1px solid #dce7df;
+      border-radius: 16px;
+      padding: 22px;
+      margin-top: 20px;
+    }
 
-.small { padding: 7px 11px; }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #e5ebe6;
+    }
 
-footer {
-  text-align: center;
-  padding: 22px;
-  background: #e7efe9;
-  color: #425148;
-}
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-@media (max-width: 560px) {
-  .controls { grid-template-columns: 1fr; }
-}
-</style>
+    .quantity-controls button {
+      padding: 7px 12px;
+    }
+
+    .total {
+      font-size: 25px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .note {
+      color: #63756a;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 25px;
+      }
+
+      .cart-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
-<header>
-  <h1>🛍️ Pakkathukadai</h1>
-  <p>Supporting Local. Building Community.</p>
-</header>
-
-<main>
-
-  <div class="intro">
-    <h2>Shop from your neighbourhood</h2>
+  <header>
+    <h1>Shop from your neighbourhood</h1>
     <p>Find everyday essentials from nearby shops in one place.</p>
+  </header>
+
+  <div id="status" class="status">Connecting to Supabase...</div>
+
+  <h2>Available Products</h2>
+
+  <div class="filters">
+    <input
+      id="search"
+      type="search"
+      placeholder="Search products or shops..."
+      aria-label="Search products or shops"
+    >
+
+    <select id="shopFilter" aria-label="Filter by shop">
+      <option value="">All shops</option>
+    </select>
   </div>
 
-  <div id="status" class="status">
-    Connecting to Supabase…
+  <div id="products">
+    <p>Loading products...</p>
   </div>
 
-  <section id="products">
-    <h2>Available Products</h2>
-
-    <div class="controls">
-      <input
-        id="searchInput"
-        placeholder="Search products or shops…"
-      >
-
-      <select id="shopFilter">
-        <option value="">All shops</option>
-      </select>
-    </div>
-
-    <div id="productGrid" class="grid">
-      <p>Loading products…</p>
-    </div>
-  </section>
-
-  <section id="cart">
-    <h2>Your Shopping Cart</h2>
-
-    <div class="cart-box">
-      <div id="cartItems">
-        <p class="muted">Your cart is empty.</p>
-      </div>
-
-      <div id="cartTotal" class="total">
-        Total: ₹0.00
-      </div>
-
-      <button id="orderButton">
-        Proceed to Order
-      </button>
-
-      <p class="muted">
-        Demo only: orders and payments are not connected yet.
-      </p>
-    </div>
-  </section>
-
-  <section>
-    <h2>Why Pakkathukadai?</h2>
-
-    <div class="intro">
-      <p>
-        We connect customers with neighbourhood shops,
-        helping local businesses reach more people and
-        making everyday shopping easier.
-      </p>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <p>Supporting Local. Building Community.</p>
-  <p>© 2026 Pakkathukadai</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-// Replace these two values with your actual Supabase details.
-// Never use a service_role or secret key in public website code.
-
-const SUPABASE_URL = "https://qjywimxvejnkfbatukut.supabase.co/rest/v1/";
-const SUPABASE_KEY = "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
-
-// Use the exact table name shown in Supabase.
-// If your table is named products in lowercase, change this to "products".
-
-const TABLE_NAME = "Products";
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-let products = [];
-const cart = {};
-
-const $ = id => document.getElementById(id);
-
-function emoji(name) {
-  const n = (name || "").toLowerCase();
-
-  if (n.includes("tomato")) return "🍅";
-  if (n.includes("potato")) return "🥔";
-  if (n.includes("apple")) return "🍎";
-  if (n.includes("rice")) return "🍚";
-  if (n.includes("oil")) return "🫗";
-  if (n.includes("milk")) return "🥛";
-  if (n.includes("onion")) return "🧅";
-  if (n.includes("banana")) return "🍌";
-
-  return "🛒";
-}
-
-function status(message, error = false) {
-  $("status").textContent = message;
-  $("status").classList.toggle("error", error);
-}
-
-function renderShops() {
-  const old = $("shopFilter").value;
-
-  const shops = [
-    ...new Set(products.map(p => p.shop_name).filter(Boolean))
-  ].sort();
-
-  $("shopFilter").innerHTML =
-    '<option value="">All shops</option>';
-
-  shops.forEach(shop => {
-    const option = document.createElement("option");
-    option.value = shop;
-    option.textContent = shop;
-    $("shopFilter").appendChild(option);
-  });
-
-  if (shops.includes(old)) {
-    $("shopFilter").value = old;
-  }
-}
-
-function renderProducts() {
-  const query = $("searchInput").value.trim().toLowerCase();
-  const selectedShop = $("shopFilter").value;
-
-  const list = products.filter(product => {
-    const matchesSearch =
-      String(product.name || "").toLowerCase().includes(query) ||
-      String(product.shop_name || "").toLowerCase().includes(query);
-
-    const matchesShop =
-      !selectedShop || product.shop_name === selectedShop;
-
-    return matchesSearch && matchesShop;
-  });
-
-  const grid = $("productGrid");
-  grid.innerHTML = "";
-
-  if (!list.length) {
-    grid.textContent = "No matching products found.";
-    return;
-  }
-
-  list.forEach(product => {
-    const card = document.createElement("article");
-    card.className = "product";
-
-    const icon = document.createElement("div");
-    icon.className = "emoji";
-    icon.textContent = emoji(product.name);
-
-    const title = document.createElement("h3");
-    title.textContent = product.name;
-
-    const shop = document.createElement("p");
-    shop.className = "muted";
-    shop.textContent = product.shop_name || "Local shop";
-
-    const unit = document.createElement("p");
-    unit.className = "muted";
-    unit.textContent = product.unit || "per item";
-
-    const price = document.createElement("div");
-    price.className = "price";
-    price.textContent =
-      "₹" + Number(product.price || 0).toFixed(2);
-
-    const stock = document.createElement("p");
-    stock.className = "muted";
-    stock.textContent =
-      "Available: " +
-      Number(product.quantity || 0) +
-      " " + (product.unit || "items");
-
-    const button = document.createElement("button");
-    button.textContent =
-      Number(product.quantity) > 0
-        ? "Add to Cart"
-        : "Out of stock";
-
-    button.disabled = Number(product.quantity) <= 0;
-    button.onclick = () => add(product.id);
-
-    card.append(icon, title, shop, unit, price, stock, button);
-    grid.appendChild(card);
-  });
-}
-
-function add(id) {
-  const product = products.find(
-    p => String(p.id) === String(id)
-  );
-
-  if (!product) return;
-
-  if ((cart[id] || 0) >= Number(product.quantity || 0)) {
-    alert("No more stock available.");
-    return;
-  }
-
-  cart[id] = (cart[id] || 0) + 1;
-  renderCart();
-}
-
-function change(id, amount) {
-  const product = products.find(
-    p => String(p.id) === String(id)
-  );
-
-  if (!product) return;
-
-  const next = (cart[id] || 0) + amount;
-
-  if (next <= 0) {
-    delete cart[id];
-  } else if (next > Number(product.quantity || 0)) {
-    alert("Only " + product.quantity + " available.");
-  } else {
-    cart[id] = next;
-  }
-
-  renderCart();
-}
-
-function renderCart() {
-  const box = $("cartItems");
-  box.innerHTML = "";
-
-  let total = 0;
-
-  const rows = Object.entries(cart).filter(
-    ([, quantity]) => quantity > 0
-  );
-
-  if (!rows.length) {
-    box.innerHTML =
-      '<p class="muted">Your cart is empty.</p>';
-  }
-
-  rows.forEach(([id, quantity]) => {
-    const product = products.find(
-      p => String(p.id) === String(id)
-    );
-
-    if (!product) return;
-
-    const sum = Number(product.price || 0) * quantity;
-    total += sum;
-
-    const row = document.createElement("div");
-    row.className = "cart-row";
-
-    const details = document.createElement("div");
-
-    const name = document.createElement("strong");
-    name.textContent = product.name;
-
-    const line = document.createElement("div");
-    line.className = "muted";
-    line.textContent =
-      "₹" + Number(product.price).toFixed(2) +
-      " × " + quantity + " = ₹" + sum.toFixed(2);
-
-    details.append(name, line);
-
-    const actions = document.createElement("div");
-    actions.className = "actions";
-
-    const minus = document.createElement("button");
-    minus.className = "small";
-    minus.textContent = "−";
-    minus.onclick = () => change(id, -1);
-
-    const count = document.createElement("span");
-    count.textContent = quantity;
-
-    const plus = document.createElement("button");
-    plus.className = "small";
-    plus.textContent = "+";
-    plus.onclick = () => change(id, 1);
-
-    actions.append(minus, count, plus);
-    row.append(details, actions);
-    box.appendChild(row);
-  });
-
-  $("cartTotal").textContent =
-    "Total: ₹" + total.toFixed(2);
-}
-
-async function loadProducts() {
-  if (
-    SUPABASE_URL.includes("YOUR_SUPABASE") ||
-    SUPABASE_KEY.includes("YOUR_SUPABASE")
-  ) {
-    status(
-      "Setup needed: add your Supabase URL and publishable key.",
-      true
-    );
-
-    $("productGrid").textContent =
-      "Please add your Supabase Project URL and publishable key.";
-
-    return;
-  }
-
-  status("Loading products from Supabase…");
-
-  const { data, error } = await db
-    .from(TABLE_NAME)
-    .select("id, name, price, quantity, shop_name, unit")
-    .order("id");
-
-  if (error) {
-    console.error(error);
-
-    status(
-      "Could not load products: " + error.message +
-      ". Check table name and SELECT policy.",
-      true
-    );
-
-    $("productGrid").textContent =
-      "Products could not be loaded. Check the Supabase table name and read-access policy.";
-
-    return;
-  }
-
-  products = (data || []).map(product => ({
-    ...product,
-    price: Number(product.price || 0),
-    quantity: Number(product.quantity || 0)
-  }));
-
-  renderShops();
-  renderProducts();
-  renderCart();
-
-  status(
-    "Connected to Supabase. Loaded " +
-    products.length + " product(s)."
-  );
-}
-
-$("searchInput").addEventListener("input", renderProducts);
-
-$("shopFilter").addEventListener("change", renderProducts);
-
-$("orderButton").onclick = () => {
-  alert(
-    Object.keys(cart).length
-      ? "Demo only: order placement is not connected yet."
-      : "Your cart is empty. Add a product first."
-  );
-};
-
-loadProducts();
-
-</script>
+  <h2>Your Shopping Cart</h2>
+
+  <div class="cart">
+    <div id="cartItems">Your cart is empty.</div>
+    <div class="total">Total: ₹<span id="total">0.00</span></div>
+    <button id="orderButton" type="button">Proceed to Order</button>
+    <p class="note">
+      Demo only: orders and payments are not connected yet.
+    </p>
+  </div>
+
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Supabase project configuration
+    const SUPABASE_URL =
+      "https://qjywimxvejnkfbatukut.supabase.co";
+
+    // Replace this placeholder with your own Supabase publishable key.
+    const SUPABASE_KEY =
+      "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+
+    // Use the exact table name shown in Supabase Table Editor.
+    const TABLE_NAME = "Products";
+
+    const statusBox = document.getElementById("status");
+    const productsBox = document.getElementById("products");
+    const searchInput = document.getElementById("search");
+    const shopFilter = document.getElementById("shopFilter");
+    const cartItemsBox = document.getElementById("cartItems");
+    const totalBox = document.getElementById("total");
+    const orderButton = document.getElementById("orderButton");
+
+    let supabaseClient;
+    let products = [];
+    const cart = {};
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.className = isError ? "status error" : "status";
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    async function loadProducts() {
+      try {
+        if (
+          !window.supabase ||
+          !window.supabase.createClient
+        ) {
+          throw new Error("Supabase library did not load. Check your internet connection.");
+        }
+
+        if (
+          !SUPABASE_KEY ||
+          SUPABASE_KEY === "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE"
+        ) {
+          throw new Error("Add your Supabase publishable key in the code.");
+        }
+
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY
+        );
+
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("id, name, price, quantity, shop_name, unit")
+          .order("name");
+
+        if (error) {
+          throw error;
+        }
+
+        products = data || [];
+
+        showStatus(
+          "Connected to Supabase. Loaded " +
+          products.length + " product(s)."
+        );
+
+        populateShopFilter();
+        renderProducts();
+        renderCart();
+
+      } catch (error) {
+        console.error("Supabase product loading error:", error);
+
+        showStatus(
+          "Could not load products: " +
+          (error.message || "Unknown error") +
+          ". Check Project URL, table name and SELECT policy.",
+          true
+        );
+
+        productsBox.textContent =
+          "Products could not be loaded. Check the error above.";
+      }
+    }
+
+    function populateShopFilter() {
+      const selectedShop = shopFilter.value;
+
+      const shops = [
+        ...new Set(
+          products
+            .map(product => product.shop_name)
+            .filter(Boolean)
+        )
+      ].sort();
+
+      shopFilter.replaceChildren();
+
+      const allOption = document.createElement("option");
+      allOption.value = "";
+      allOption.textContent = "All shops";
+      shopFilter.appendChild(allOption);
+
+      shops.forEach(shop => {
+        const option = document.createElement("option");
+        option.value = shop;
+        option.textContent = shop;
+        shopFilter.appendChild(option);
+      });
+
+      if (shops.includes(selectedShop)) {
+        shopFilter.value = selectedShop;
+      }
+    }
+
+    function renderProducts() {
+      const searchTerm = searchInput.value
+        .trim()
+        .toLowerCase();
+
+      const selectedShop = shopFilter.value;
+
+      const filtered = products.filter(product => {
+        const matchesSearch =
+          String(product.name || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(product.shop_name || "")
+            .toLowerCase()
+            .includes(searchTerm);
+
+        const matchesShop =
+          !selectedShop ||
+          product.shop_name === selectedShop;
+
+        return matchesSearch && matchesShop;
+      });
+
+      productsBox.replaceChildren();
+
+      if (filtered.length === 0) {
+        const message = document.createElement("p");
+        message.textContent = products.length
+          ? "No matching products found."
+          : "No products are available in the table yet.";
+
+        productsBox.appendChild(message);
+        return;
+      }
+
+      filtered.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "product";
+
+        const heading = document.createElement("h3");
+        heading.textContent = product.name || "Unnamed product";
+
+        const shop = document.createElement("p");
+        shop.className = "shop";
+        shop.textContent = product.shop_name || "Local shop";
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent =
+          "₹" + Number(product.price || 0).toFixed(2) +
+          (product.unit ? " / " + product.unit : "");
+
+        const stock = document.createElement("p");
+        stock.textContent =
+          "Available: " + Number(product.quantity || 0) +
+          (product.unit ? " " + product.unit : "");
+
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.textContent = "Add to Cart";
+
+        const available = Number(product.quantity || 0);
+        addButton.disabled = available <= 0;
+
+        addButton.addEventListener("click", () => {
+          addToCart(product.id);
+        });
+
+        card.append(heading, shop, price, stock, addButton);
+        productsBox.appendChild(card);
+      });
+    }
+
+    function addToCart(id) {
+      const product = products.find(
+        item => String(item.id) === String(id)
+      );
+
+      if (!product) return;
+
+      const available = Number(product.quantity || 0);
+      const current = cart[id] || 0;
+
+      if (current >= available) {
+        alert("You cannot add more than the available quantity.");
+        return;
+      }
+
+      cart[id] = current + 1;
+      renderCart();
+    }
+
+    function changeQuantity(id, change) {
+      const product = products.find(
+        item => String(item.id) === String(id)
+      );
+
+      if (!product) return;
+
+      const nextQuantity = (cart[id] || 0) + change;
+      const available = Number(product.quantity || 0);
+
+      if (nextQuantity <= 0) {
+        delete cart[id];
+      } else if (nextQuantity <= available) {
+        cart[id] = nextQuantity;
+      } else {
+        alert("Only " + available + " available.");
+      }
+
+      renderCart();
+    }
+
+    function renderCart() {
+      cartItemsBox.replaceChildren();
+
+      const cartEntries = Object.entries(cart)
+        .filter(([, quantity]) => quantity > 0);
+
+      if (cartEntries.length === 0) {
+        cartItemsBox.textContent = "Your cart is empty.";
+        totalBox.textContent = "0.00";
+        return;
+      }
+
+      let total = 0;
+
+      cartEntries.forEach(([id, quantity]) => {
+        const product = products.find(
+          item => String(item.id) === String(id)
+        );
+
+        if (!product) return;
+
+        const price = Number(product.price || 0);
+        total += price * quantity;
+
+        const row = document.createElement("div");
+        row.className = "cart-item";
+
+        const details = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = product.name;
+
+        const subtotal = document.createElement("div");
+        subtotal.textContent =
+          "₹" + (price * quantity).toFixed(2);
+
+        details.append(name, document.createElement("br"), subtotal);
+
+        const controls = document.createElement("div");
+        controls.className = "quantity-controls";
+
+        const minus = document.createElement("button");
+        minus.type = "button";
+        minus.textContent = "−";
+        minus.setAttribute("aria-label", "Decrease quantity");
+        minus.addEventListener("click", () => {
+          changeQuantity(id, -1);
+        });
+
+        const count = document.createElement("span");
+        count.textContent = String(quantity);
+
+        const plus = document.createElement("button");
+        plus.type = "button";
+        plus.textContent = "+";
+        plus.setAttribute("aria-label", "Increase quantity");
+        plus.addEventListener("click", () => {
+          changeQuantity(id, 1);
+        });
+
+        controls.append(minus, count, plus);
+        row.append(details, controls);
+        cartItemsBox.appendChild(row);
+      });
+
+      totalBox.textContent = total.toFixed(2);
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    shopFilter.addEventListener("change", renderProducts);
+
+    orderButton.addEventListener("click", () => {
+      if (Object.keys(cart).length === 0) {
+        alert("Your cart is empty. Add a product first.");
+        return;
+      }
+
+      alert(
+        "Your cart is ready! Online ordering is not connected yet."
+      );
+    });
+
+    loadProducts();
+  </script>
 </body>
 </html>
