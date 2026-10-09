@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pakkathukadai | Your Neighbourhood Store</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9f4;
+      color: #24352a;
+    }
+
+    header {
+      background: #176b45;
+      color: white;
+      padding: 22px 7%;
+    }
+
+    header h1 {
+      font-size: 28px;
+    }
+
+    header p {
+      margin-top: 6px;
+      color: #e0f3e7;
+    }
+
+    nav {
+      background: white;
+      padding: 15px 7%;
+      border-bottom: 1px solid #e2e8df;
+    }
+
+    nav a {
+      color: #176b45;
+      text-decoration: none;
+      margin-right: 22px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .hero {
+      background: #e1f2e5;
+      padding: 35px;
+      border-radius: 18px;
+    }
+
+    .hero h2 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      flex: 1;
+      min-width: 180px;
+      padding: 13px;
+      border: 1px solid #b8cbb9;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 13px 20px;
+      background: #176b45;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    h2.section-title {
+      margin: 35px 0 18px;
+    }
+
+    .shops {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .shop {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #e2e8df;
+    }
+
+    .shop h3 {
+      margin-bottom: 10px;
+    }
+
+    .shop p {
+      color: #647368;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      margin-top: 50px;
+      background: #173e2c;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 500px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      .hero {
+        padding: 23px;
+      }
+
+      .hero h2 {
+        font-size: 26px;
+      }
+
+      nav a {
+        display: inline-block;
+        margin: 5px 12px 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🛍️ Pakkathukadai</h1>
+    <p>Your neighbourhood. Your shops. Your community.</p>
+  </header>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#shops">Local Shops</a>
+    <a href="#about">About Us</a>
+    <a href="#cart">Cart (0)</a>
+  </nav>
+
+  <main>
+    <section class="hero" id="home">
+      <h2>Shop Local. Grow Together.</h2>
+      <p>
+        Discover neighbourhood shops, explore products,
+        and support the businesses around you.
+      </p>
+
+      <div class="search">
+        <input
+          type="text"
+          id="shopSearch"
+          placeholder="Search for a shop..."
+        >
+        <button onclick="searchShops()">Find Shops</button>
+      </div>
+    </section>
+
+    <section id="shops">
+      <h2 class="section-title">Explore Local Shops</h2>
+
+      <div class="shops" id="shopList">
+        <article class="shop">
+          <h3>🥦 Fresh Mart</h3>
+          <p>Fresh vegetables and fruits</p>
+          <button onclick="showMessage('Fresh Mart')">
+            Explore Shop
+          </button>
+        </article>
+
+        <article class="shop">
+          <h3>🛒 Daily Needs Store</h3>
+          <p>Groceries and household essentials</p>
+          <button onclick="showMessage('Daily Needs Store')">
+            Explore Shop
+          </button>
+        </article>
+
+        <article class="shop">
+          <h3>🥛 Milk & More</h3>
+          <p>Milk, dairy products and daily supplies</p>
+          <button onclick="showMessage('Milk & More')">
+            Explore Shop
+          </button>
+        </article>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2 class="section-title">Why Pakkathukadai?</h2>
+      <p>
+        We aim to connect customers with nearby businesses,
+        help local shops grow, and make everyday shopping easier.
+      </p>
+    </section>
+  </main>
+
+  <footer id="cart">
+    <p>Supporting Local. Building Community.</p>
+    <p>© 2026 Pakkathukadai</p>
+  </footer>
+
+  <script>
+    function showMessage(shopName) {
+      alert(
+        shopName +
+        " selected! Product browsing will be added next."
+      );
+    }
+
+    function searchShops() {
+      const query = document
+        .getElementById("shopSearch")
+        .value.trim().toLowerCase();
+
+      const shops = document.querySelectorAll(".shop");
+      let count = 0;
+
+      shops.forEach(function(shop) {
+        const matches = shop.textContent
+          .toLowerCase()
+          .includes(query);
+
+        shop.style.display = matches ? "" : "none";
+
+        if (matches) count++;
+      });
+
+      if (count === 0) {
+        alert("No matching shops found. Try another search.");
+      }
+    }
+  </script>
+
+</body>
+</html>
