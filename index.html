@@ -2,520 +2,699 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pakkathukadai | Shop Local</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pakkathu Kadai | Shop Local</title>
 
-<style>
-:root {
-  --green: #087443;
-  --dark: #065b35;
-  --bg: #f4f8f5;
-  --muted: #5b665f;
-}
+  <style>
+    :root {
+      --green: #147747;
+      --dark-green: #0b5130;
+      --light-green: #eaf6ee;
+      --background: #f5f8f5;
+      --border: #dce7df;
+      --text: #203329;
+      --muted: #6b7d71;
+    }
 
-* { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: #17231c;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--background);
+      color: var(--text);
+    }
 
-header {
-  background: var(--green);
-  color: white;
-  padding: 24px max(20px, calc((100% - 1100px)/2));
-}
+    header {
+      background: var(--green);
+      color: white;
+      padding: 22px 5%;
+    }
 
-header h1 { margin: 0 0 6px; }
+    .header-content {
+      max-width: 1150px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
 
-main {
-  width: min(1100px, calc(100% - 32px));
-  margin: 26px auto;
-}
+    .brand {
+      font-size: 27px;
+      font-weight: bold;
+    }
 
-section { margin-bottom: 30px; }
-h2 { margin: 0 0 16px; }
+    .tagline {
+      margin-top: 6px;
+      font-size: 14px;
+    }
 
-.intro, .cart-box, .product {
-  background: white;
-  border: 1px solid #e1e9e3;
-  border-radius: 14px;
-  padding: 18px;
-}
+    .cart-badge {
+      background: white;
+      color: var(--green);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
 
-.controls {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
+    main {
+      max-width: 1150px;
+      margin: auto;
+      padding: 22px 16px 45px;
+    }
 
-input, select {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #ccd8cf;
-  border-radius: 9px;
-  font-size: 16px;
-  background: white;
-}
+    .welcome {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
+    .welcome h1 {
+      margin: 0 0 10px;
+      font-size: 27px;
+    }
 
-.emoji { font-size: 34px; }
-.product h3 { margin: 8px 0; }
-.muted { color: var(--muted); }
+    .welcome p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
 
-.price, .total {
-  font-size: 21px;
-  font-weight: bold;
-  margin: 14px 0;
-}
+    .status {
+      background: var(--light-green);
+      color: var(--dark-green);
+      padding: 13px 15px;
+      border-radius: 10px;
+      margin-bottom: 22px;
+      overflow-wrap: anywhere;
+    }
 
-button {
-  background: var(--green);
-  color: white;
-  border: 0;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .status.error {
+      background: #fff0ee;
+      color: #a32020;
+    }
 
-button:hover { background: var(--dark); }
-button:disabled { opacity: .5; cursor: not-allowed; }
+    .section-heading {
+      margin: 28px 0 16px;
+      font-size: 23px;
+    }
 
-.status {
-  padding: 12px;
-  border-radius: 8px;
-  background: #e4f3e8;
-  margin-bottom: 18px;
-}
+    .filters {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
 
-.error {
-  background: #fff0ee;
-  color: #9f2418;
-}
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd9ce;
+      border-radius: 10px;
+      background: white;
+      color: var(--text);
+      font-size: 15px;
+    }
 
-.cart-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #e5ece7;
-}
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 17px;
+    }
 
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+    .product-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 19px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
 
-.small { padding: 7px 11px; }
+    .product-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--light-green);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
 
-footer {
-  text-align: center;
-  padding: 22px;
-  background: #e7efe9;
-  color: #425148;
-}
+    .product-card h3 {
+      font-size: 19px;
+      margin: 5px 0 0;
+    }
 
-@media (max-width: 560px) {
-  .controls { grid-template-columns: 1fr; }
-}
-</style>
+    .shop-name {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .price {
+      font-size: 21px;
+      font-weight: bold;
+      color: var(--dark-green);
+      margin: 5px 0 0;
+    }
+
+    .stock {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary-button {
+      color: white;
+      background: var(--green);
+    }
+
+    .primary-button:hover {
+      background: var(--dark-green);
+    }
+
+    button:disabled {
+      background: #aab8ae;
+      cursor: not-allowed;
+    }
+
+    .product-card .primary-button {
+      margin-top: auto;
+    }
+
+    .empty {
+      background: white;
+      border: 1px dashed #b9cbbd;
+      border-radius: 12px;
+      padding: 25px;
+      color: var(--muted);
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    .cart-panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    .cart-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid #edf1ed;
+    }
+
+    .cart-product-name {
+      font-weight: bold;
+    }
+
+    .cart-subtotal {
+      color: var(--muted);
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-controls button {
+      min-width: 35px;
+      padding: 8px;
+      background: var(--light-green);
+      color: var(--dark-green);
+    }
+
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 23px;
+      font-weight: bold;
+      margin: 23px 0;
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 23px 15px;
+      background: white;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      .filters { grid-template-columns: 1fr; }
+      .welcome h1 { font-size: 23px; }
+      .brand { font-size: 23px; }
+      .cart-row { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <div class="header-content">
+      <div>
+        <div class="brand">🛍️ Pakkathu Kadai</div>
+        <div class="tagline">Your neighbourhood. Your shops. Your convenience.</div>
+      </div>
+      <div class="cart-badge">
+        🛒 Cart: <span id="cartCount">0</span>
+      </div>
+    </div>
+  </header>
 
-<header>
-  <h1>🛍️ Pakkathukadai</h1>
-  <p>Supporting Local. Building Community.</p>
-</header>
+  <main>
+    <section class="welcome">
+      <h1>Shop local, shop smart!</h1>
+      <p>Discover everyday essentials from neighbourhood shops in one place.</p>
+    </section>
 
-<main>
+    <div id="status" class="status" role="status" aria-live="polite">
+      Connecting to your product database...
+    </div>
 
-  <div class="intro">
-    <h2>Shop from your neighbourhood</h2>
-    <p>Find everyday essentials from nearby shops in one place.</p>
-  </div>
+    <h2 class="section-heading">Explore Products</h2>
 
-  <div id="status" class="status">
-    Connecting to Supabase…
-  </div>
-
-  <section id="products">
-    <h2>Available Products</h2>
-
-    <div class="controls">
+    <div class="filters">
       <input
         id="searchInput"
-        placeholder="Search products or shops…"
+        type="search"
+        placeholder="Search products or shops..."
+        aria-label="Search products or shops"
       >
 
-      <select id="shopFilter">
+      <select id="shopFilter" aria-label="Filter by shop">
         <option value="">All shops</option>
       </select>
     </div>
 
-    <div id="productGrid" class="grid">
-      <p>Loading products…</p>
+    <div id="productGrid" class="product-grid">
+      <div class="empty">Loading products...</div>
     </div>
-  </section>
 
-  <section id="cart">
-    <h2>Your Shopping Cart</h2>
+    <h2 class="section-heading">Your Shopping Cart</h2>
 
-    <div class="cart-box">
+    <section class="cart-panel">
       <div id="cartItems">
-        <p class="muted">Your cart is empty.</p>
+        <p class="note">Your cart is empty. Add a product to begin.</p>
       </div>
 
-      <div id="cartTotal" class="total">
-        Total: ₹0.00
+      <div class="total-line">
+        <span>Total</span>
+        <span>₹<span id="cartTotal">0.00</span></span>
       </div>
 
-      <button id="orderButton">
+      <button id="orderButton" class="primary-button" type="button">
         Proceed to Order
       </button>
 
-      <p class="muted">
-        Demo only: orders and payments are not connected yet.
+      <p class="note">
+        This is currently a website prototype. Orders, payments and stock
+        updates are not connected yet.
       </p>
-    </div>
-  </section>
-
-  <section>
-    <h2>Why Pakkathukadai?</h2>
-
-    <div class="intro">
-      <p>
-        We connect customers with neighbourhood shops,
-        helping local businesses reach more people and
-        making everyday shopping easier.
-      </p>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <p>Supporting Local. Building Community.</p>
-  <p>© 2026 Pakkathukadai</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-// Replace these two values with your actual Supabase details.
-// Never use a service_role or secret key in public website code.
-
-const SUPABASE_URL = "https://qjywimxvejnkfbatukut.supabase.co/rest/v1/";
-const SUPABASE_KEY = "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
-
-// Use the exact table name shown in Supabase.
-// If your table is named products in lowercase, change this to "products".
-
-const TABLE_NAME = "Products";
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-let products = [];
-const cart = {};
-
-const $ = id => document.getElementById(id);
-
-function emoji(name) {
-  const n = (name || "").toLowerCase();
-
-  if (n.includes("tomato")) return "🍅";
-  if (n.includes("potato")) return "🥔";
-  if (n.includes("apple")) return "🍎";
-  if (n.includes("rice")) return "🍚";
-  if (n.includes("oil")) return "🫗";
-  if (n.includes("milk")) return "🥛";
-  if (n.includes("onion")) return "🧅";
-  if (n.includes("banana")) return "🍌";
-
-  return "🛒";
-}
-
-function status(message, error = false) {
-  $("status").textContent = message;
-  $("status").classList.toggle("error", error);
-}
-
-function renderShops() {
-  const old = $("shopFilter").value;
-
-  const shops = [
-    ...new Set(products.map(p => p.shop_name).filter(Boolean))
-  ].sort();
-
-  $("shopFilter").innerHTML =
-    '<option value="">All shops</option>';
-
-  shops.forEach(shop => {
-    const option = document.createElement("option");
-    option.value = shop;
-    option.textContent = shop;
-    $("shopFilter").appendChild(option);
-  });
-
-  if (shops.includes(old)) {
-    $("shopFilter").value = old;
-  }
-}
-
-function renderProducts() {
-  const query = $("searchInput").value.trim().toLowerCase();
-  const selectedShop = $("shopFilter").value;
-
-  const list = products.filter(product => {
-    const matchesSearch =
-      String(product.name || "").toLowerCase().includes(query) ||
-      String(product.shop_name || "").toLowerCase().includes(query);
-
-    const matchesShop =
-      !selectedShop || product.shop_name === selectedShop;
-
-    return matchesSearch && matchesShop;
-  });
-
-  const grid = $("productGrid");
-  grid.innerHTML = "";
-
-  if (!list.length) {
-    grid.textContent = "No matching products found.";
-    return;
-  }
-
-  list.forEach(product => {
-    const card = document.createElement("article");
-    card.className = "product";
-
-    const icon = document.createElement("div");
-    icon.className = "emoji";
-    icon.textContent = emoji(product.name);
-
-    const title = document.createElement("h3");
-    title.textContent = product.name;
-
-    const shop = document.createElement("p");
-    shop.className = "muted";
-    shop.textContent = product.shop_name || "Local shop";
-
-    const unit = document.createElement("p");
-    unit.className = "muted";
-    unit.textContent = product.unit || "per item";
-
-    const price = document.createElement("div");
-    price.className = "price";
-    price.textContent =
-      "₹" + Number(product.price || 0).toFixed(2);
-
-    const stock = document.createElement("p");
-    stock.className = "muted";
-    stock.textContent =
-      "Available: " +
-      Number(product.quantity || 0) +
-      " " + (product.unit || "items");
-
-    const button = document.createElement("button");
-    button.textContent =
-      Number(product.quantity) > 0
-        ? "Add to Cart"
-        : "Out of stock";
-
-    button.disabled = Number(product.quantity) <= 0;
-    button.onclick = () => add(product.id);
-
-    card.append(icon, title, shop, unit, price, stock, button);
-    grid.appendChild(card);
-  });
-}
-
-function add(id) {
-  const product = products.find(
-    p => String(p.id) === String(id)
-  );
-
-  if (!product) return;
-
-  if ((cart[id] || 0) >= Number(product.quantity || 0)) {
-    alert("No more stock available.");
-    return;
-  }
-
-  cart[id] = (cart[id] || 0) + 1;
-  renderCart();
-}
-
-function change(id, amount) {
-  const product = products.find(
-    p => String(p.id) === String(id)
-  );
-
-  if (!product) return;
-
-  const next = (cart[id] || 0) + amount;
-
-  if (next <= 0) {
-    delete cart[id];
-  } else if (next > Number(product.quantity || 0)) {
-    alert("Only " + product.quantity + " available.");
-  } else {
-    cart[id] = next;
-  }
-
-  renderCart();
-}
-
-function renderCart() {
-  const box = $("cartItems");
-  box.innerHTML = "";
-
-  let total = 0;
-
-  const rows = Object.entries(cart).filter(
-    ([, quantity]) => quantity > 0
-  );
-
-  if (!rows.length) {
-    box.innerHTML =
-      '<p class="muted">Your cart is empty.</p>';
-  }
-
-  rows.forEach(([id, quantity]) => {
-    const product = products.find(
-      p => String(p.id) === String(id)
-    );
-
-    if (!product) return;
-
-    const sum = Number(product.price || 0) * quantity;
-    total += sum;
-
-    const row = document.createElement("div");
-    row.className = "cart-row";
-
-    const details = document.createElement("div");
-
-    const name = document.createElement("strong");
-    name.textContent = product.name;
-
-    const line = document.createElement("div");
-    line.className = "muted";
-    line.textContent =
-      "₹" + Number(product.price).toFixed(2) +
-      " × " + quantity + " = ₹" + sum.toFixed(2);
-
-    details.append(name, line);
-
-    const actions = document.createElement("div");
-    actions.className = "actions";
-
-    const minus = document.createElement("button");
-    minus.className = "small";
-    minus.textContent = "−";
-    minus.onclick = () => change(id, -1);
-
-    const count = document.createElement("span");
-    count.textContent = quantity;
-
-    const plus = document.createElement("button");
-    plus.className = "small";
-    plus.textContent = "+";
-    plus.onclick = () => change(id, 1);
-
-    actions.append(minus, count, plus);
-    row.append(details, actions);
-    box.appendChild(row);
-  });
-
-  $("cartTotal").textContent =
-    "Total: ₹" + total.toFixed(2);
-}
-
-async function loadProducts() {
-  if (
-    SUPABASE_URL.includes("YOUR_SUPABASE") ||
-    SUPABASE_KEY.includes("YOUR_SUPABASE")
-  ) {
-    status(
-      "Setup needed: add your Supabase URL and publishable key.",
-      true
-    );
-
-    $("productGrid").textContent =
-      "Please add your Supabase Project URL and publishable key.";
-
-    return;
-  }
-
-  status("Loading products from Supabase…");
-
-  const { data, error } = await db
-    .from(TABLE_NAME)
-    .select("id, name, price, quantity, shop_name, unit")
-    .order("id");
-
-  if (error) {
-    console.error(error);
-
-    status(
-      "Could not load products: " + error.message +
-      ". Check table name and SELECT policy.",
-      true
-    );
-
-    $("productGrid").textContent =
-      "Products could not be loaded. Check the Supabase table name and read-access policy.";
-
-    return;
-  }
-
-  products = (data || []).map(product => ({
-    ...product,
-    price: Number(product.price || 0),
-    quantity: Number(product.quantity || 0)
-  }));
-
-  renderShops();
-  renderProducts();
-  renderCart();
-
-  status(
-    "Connected to Supabase. Loaded " +
-    products.length + " product(s)."
-  );
-}
-
-$("searchInput").addEventListener("input", renderProducts);
-
-$("shopFilter").addEventListener("change", renderProducts);
-
-$("orderButton").onclick = () => {
-  alert(
-    Object.keys(cart).length
-      ? "Demo only: order placement is not connected yet."
-      : "Your cart is empty. Add a product first."
-  );
-};
-
-loadProducts();
-
-</script>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Pakkathu Kadai · Support your neighbourhood shops
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    "use strict";
+
+    // Your Supabase project URL
+    const SUPABASE_URL =
+      "https://qjywimxvejnkfbatukut.supabase.co";
+
+    // Replace the placeholder with your existing publishable key.
+    const SUPABASE_KEY =
+      "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
+
+    // Use the exact table name shown in Supabase.
+    const TABLE_NAME = "Products";
+
+    const statusElement = document.getElementById("status");
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+    const shopFilter = document.getElementById("shopFilter");
+    const cartItemsElement = document.getElementById("cartItems");
+    const cartTotalElement = document.getElementById("cartTotal");
+    const cartCountElement = document.getElementById("cartCount");
+    const orderButton = document.getElementById("orderButton");
+
+    let supabaseClient = null;
+    let products = [];
+
+    // Cart quantities are kept in this browser session.
+    const cart = {};
+
+    function setStatus(message, isError = false) {
+      statusElement.textContent = message;
+      statusElement.className = isError ? "status error" : "status";
+    }
+
+    function formatPrice(value) {
+      return Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function productIcon(name) {
+      const value = String(name || "").toLowerCase();
+
+      if (value.includes("milk")) return "🥛";
+      if (value.includes("rice")) return "🍚";
+      if (value.includes("tomato")) return "🍅";
+      if (value.includes("potato")) return "🥔";
+      if (value.includes("apple")) return "🍎";
+      if (value.includes("oil")) return "🫗";
+      if (value.includes("bread")) return "🍞";
+      if (value.includes("egg")) return "🥚";
+      if (value.includes("banana")) return "🍌";
+
+      return "🛍️";
+    }
+
+    async function loadProducts() {
+      try {
+        if (!window.supabase) {
+          throw new Error(
+            "Supabase library could not load. Check your internet connection."
+          );
+        }
+
+        if (
+          !SUPABASE_KEY ||
+          SUPABASE_KEY === "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE"
+        ) {
+          throw new Error(
+            "Add your actual Supabase publishable key in index.html."
+          );
+        }
+
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY
+        );
+
+        setStatus("Connecting to Supabase...");
+
+        const { data, error } = await supabaseClient
+          .from(TABLE_NAME)
+          .select("id, name, price, quantity, shop_name, unit")
+          .order("name");
+
+        if (error) throw error;
+
+        products = data || [];
+
+        setStatus(
+          "Connected successfully! Loaded " +
+          products.length + " product(s)."
+        );
+
+        populateShops();
+        renderProducts();
+        renderCart();
+
+      } catch (error) {
+        console.error("Product loading error:", error);
+
+        setStatus(
+          "Could not load products: " +
+          (error.message || "Unknown error"),
+          true
+        );
+
+        productGrid.replaceChildren();
+
+        const message = document.createElement("div");
+        message.className = "empty";
+        message.textContent =
+          "Products could not be loaded. Check the connection and database settings.";
+        productGrid.appendChild(message);
+      }
+    }
+
+    function populateShops() {
+      const currentValue = shopFilter.value;
+
+      shopFilter.replaceChildren();
+
+      const allOption = document.createElement("option");
+      allOption.value = "";
+      allOption.textContent = "All shops";
+      shopFilter.appendChild(allOption);
+
+      const shops = [...new Set(
+        products
+          .map(product => product.shop_name)
+          .filter(Boolean)
+      )].sort();
+
+      shops.forEach(shop => {
+        const option = document.createElement("option");
+        option.value = shop;
+        option.textContent = shop;
+        shopFilter.appendChild(option);
+      });
+
+      if (shops.includes(currentValue)) {
+        shopFilter.value = currentValue;
+      }
+    }
+
+    function renderProducts() {
+      const term = searchInput.value.trim().toLowerCase();
+      const selectedShop = shopFilter.value;
+
+      const filtered = products.filter(product => {
+        const name = String(product.name || "").toLowerCase();
+        const shop = String(product.shop_name || "").toLowerCase();
+
+        return (
+          (!term || name.includes(term) || shop.includes(term)) &&
+          (!selectedShop || product.shop_name === selectedShop)
+        );
+      });
+
+      productGrid.replaceChildren();
+
+      if (!filtered.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = products.length
+          ? "No products match your search."
+          : "No products found in the database.";
+        productGrid.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(product => {
+        const card = document.createElement("article");
+        card.className = "product-card";
+
+        const icon = document.createElement("div");
+        icon.className = "product-icon";
+        icon.textContent = productIcon(product.name);
+
+        const name = document.createElement("h3");
+        name.textContent = product.name || "Unnamed product";
+
+        const shop = document.createElement("p");
+        shop.className = "shop-name";
+        shop.textContent = "🏪 " + (product.shop_name || "Local shop");
+
+        const price = document.createElement("div");
+        price.className = "price";
+        price.textContent =
+          "₹" + formatPrice(product.price) +
+          (product.unit ? " / " + product.unit : "");
+
+        const stock = document.createElement("p");
+        stock.className = "stock";
+        stock.textContent =
+          "Available: " + Number(product.quantity || 0) +
+          (product.unit ? " " + product.unit : "");
+
+        const button = document.createElement("button");
+        button.className = "primary-button";
+        button.type = "button";
+        button.textContent = "Add to Cart";
+
+        button.disabled = Number(product.quantity || 0) <= 0;
+
+        button.addEventListener("click", () => {
+          addToCart(product.id);
+        });
+
+        card.append(icon, name, shop, price, stock, button);
+        productGrid.appendChild(card);
+      });
+    }
+
+    function addToCart(id) {
+      const product = products.find(
+        item => String(item.id) === String(id)
+      );
+
+      if (!product) return;
+
+      const available = Number(product.quantity || 0);
+      const current = cart[id] || 0;
+
+      if (current >= available) {
+        alert("You have reached the available stock quantity.");
+        return;
+      }
+
+      cart[id] = current + 1;
+      renderCart();
+    }
+
+    function changeQuantity(id, difference) {
+      const product = products.find(
+        item => String(item.id) === String(id)
+      );
+
+      if (!product) return;
+
+      const next = (cart[id] || 0) + difference;
+      const available = Number(product.quantity || 0);
+
+      if (next <= 0) {
+        delete cart[id];
+      } else if (next <= available) {
+        cart[id] = next;
+      } else {
+        alert("Only " + available + " available.");
+      }
+
+      renderCart();
+    }
+
+    function renderCart() {
+      cartItemsElement.replaceChildren();
+
+      const entries = Object.entries(cart).filter(
+        ([, quantity]) => quantity > 0
+      );
+
+      let total = 0;
+      let count = 0;
+
+      if (!entries.length) {
+        const message = document.createElement("p");
+        message.className = "note";
+        message.textContent = "Your cart is empty. Add a product to begin.";
+        cartItemsElement.appendChild(message);
+      }
+
+      entries.forEach(([id, quantity]) => {
+        const product = products.find(
+          item => String(item.id) === String(id)
+        );
+
+        if (!product) return;
+
+        const price = Number(product.price || 0);
+        total += price * quantity;
+        count += quantity;
+
+        const row = document.createElement("div");
+        row.className = "cart-row";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("div");
+        name.className = "cart-product-name";
+        name.textContent = product.name;
+
+        const subtotal = document.createElement("div");
+        subtotal.className = "cart-subtotal";
+        subtotal.textContent =
+          "₹" + formatPrice(price * quantity);
+
+        details.append(name, subtotal);
+
+        const controls = document.createElement("div");
+        controls.className = "quantity-controls";
+
+        const minus = document.createElement("button");
+        minus.type = "button";
+        minus.textContent = "−";
+        minus.setAttribute("aria-label", "Decrease quantity");
+        minus.addEventListener("click", () => {
+          changeQuantity(id, -1);
+        });
+
+        const amount = document.createElement("span");
+        amount.textContent = String(quantity);
+
+        const plus = document.createElement("button");
+        plus.type = "button";
+        plus.textContent = "+";
+        plus.setAttribute("aria-label", "Increase quantity");
+        plus.addEventListener("click", () => {
+          changeQuantity(id, 1);
+        });
+
+        controls.append(minus, amount, plus);
+        row.append(details, controls);
+        cartItemsElement.appendChild(row);
+      });
+
+      cartTotalElement.textContent = formatPrice(total);
+      cartCountElement.textContent = String(count);
+    }
+
+    searchInput.addEventListener("input", renderProducts);
+    shopFilter.addEventListener("change", renderProducts);
+
+    orderButton.addEventListener("click", () => {
+      if (!Object.keys(cart).length) {
+        alert("Your cart is empty. Add a product first.");
+        return;
+      }
+
+      alert(
+        "Your cart is ready. Online ordering has not been connected yet."
+      );
+    });
+
+    loadProducts();
+  </script>
 </body>
 </html>
