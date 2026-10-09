@@ -484,6 +484,17 @@
     renderProducts();
     renderCart();
   </script>
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+  const SUPABASE_URL = https://qjywimxvejnkfbatukut.supabase.co/rest/v1/
+  const SUPABASE_KEY = sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
 </body>
 </html>
