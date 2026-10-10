@@ -466,18 +466,43 @@ function addToCart(id) {
   cart[id] = currentQuantity + 1;
   renderCart();
 }
+    
+function changeQuantity(id, amount) {
+  const product = products.find(function(item) {
+    return String(item.id) === String(id);
+  });
 
+  if (!product) return;
 
-    function changeQuantity(id, amount) {
-      cart[id] += amount;
+  const currentQuantity = Number(cart[id] || 0);
+  const availableStock = Number(product.quantity);
+  const newQuantity = currentQuantity + amount;
 
-      if (cart[id] <= 0) {
-        delete cart[id];
-      }
+  if (newQuantity <= 0) {
+    delete cart[id];
+    renderCart();
+    return;
+  }
 
-      renderCart();
-    }
+  if (
+    product.quantity === null ||
+    product.quantity === undefined ||
+    product.quantity === "" ||
+    !Number.isFinite(availableStock) ||
+    availableStock < 0
+  ) {
+    alert("Unable to verify stock. Please try again.");
+    return;
+  }
 
+  if (newQuantity > availableStock) {
+    alert("Only " + availableStock + " units are available.");
+    return;
+  }
+
+  cart[id] = newQuantity;
+  renderCart();
+}
     function renderCart() {
       const items = Object.keys(cart);
       let total = 0;
