@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pakkathukadai | Shop Local</title>
+  <title>Pakkathu Kadai | Local Shopping</title>
 
   <style>
     * {
@@ -13,193 +13,288 @@
       padding: 0;
     }
 
+    :root {
+      --green: #167d45;
+      --dark-green: #105b32;
+      --light-green: #eaf7ee;
+      --cream: #f8fbf7;
+      --text: #24332a;
+      --muted: #68766d;
+      --border: #e0e9e1;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f7f9f4;
-      color: #24352a;
-    }
-
-    header {
-      background: #176b45;
-      color: white;
-      padding: 24px 7%;
-    }
-
-    header h1 {
-      font-size: 28px;
-    }
-
-    header p {
-      margin-top: 7px;
-      color: #e0f3e7;
-    }
-
-    nav {
-      background: white;
-      padding: 16px 7%;
-      border-bottom: 1px solid #e2e8df;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    nav a {
-      color: #176b45;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .hero {
-      background: #e1f2e5;
-      padding: 32px;
-      border-radius: 16px;
-    }
-
-    .hero h2 {
-      font-size: 30px;
-      margin-bottom: 12px;
-    }
-
-    .hero p {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--text);
       line-height: 1.6;
-      margin-bottom: 18px;
     }
 
-    .search {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    input {
-      flex: 1;
-      min-width: 150px;
-      padding: 12px;
-      border: 1px solid #b8cbb9;
-      border-radius: 8px;
-      font-size: 15px;
+    button, input {
+      font: inherit;
     }
 
     button {
-      background: #176b45;
+      cursor: pointer;
+    }
+
+    header {
+      background: var(--green);
+      color: white;
+      padding: 17px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 45px 5% 35px;
+      text-align: center;
+      background: var(--light-green);
+    }
+
+    .hero h1 {
+      font-size: clamp(27px, 4vw, 40px);
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .search-box {
+      width: min(600px, 100%);
+      margin: auto;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1px solid #cbdccc;
+      border-radius: 10px;
+      outline-color: var(--green);
+      background: white;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 5%;
+    }
+
+    .section-title {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .shop-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .shop-btn {
+      border: 1px solid #c9dfce;
+      background: white;
+      color: var(--green);
+      border-radius: 25px;
+      padding: 9px 17px;
+      font-weight: bold;
+    }
+
+    .shop-btn.active,
+    .shop-btn:hover {
+      background: var(--green);
+      color: white;
+    }
+
+    .status {
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 8px;
+      background: #f0f4f0;
+      color: var(--muted);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      padding: 19px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 3px 12px rgba(30, 70, 40, 0.04);
+    }
+
+    .product-icon {
+      background: var(--light-green);
+      border-radius: 10px;
+      min-height: 95px;
+      display: grid;
+      place-items: center;
+      font-size: 42px;
+    }
+
+    .product-card h3 {
+      font-size: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .shop-name {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .stock {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .primary-btn {
+      background: var(--green);
       color: white;
       border: none;
       border-radius: 8px;
-      padding: 11px 16px;
-      cursor: pointer;
-      font-size: 14px;
+      padding: 10px 13px;
+      font-weight: bold;
+      width: 100%;
+      margin-top: auto;
     }
 
-    button:hover {
-      background: #105435;
+    .primary-btn:hover {
+      background: var(--dark-green);
     }
 
-    button:disabled {
+    .primary-btn:disabled {
       background: #aab5ac;
       cursor: not-allowed;
     }
 
-    .section-title {
-      margin: 30px 0 16px;
-    }
-
-    .shops,
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 16px;
-    }
-
-    .shop,
-    .product,
-    .cart-box {
+    .cart-section {
+      margin-top: 45px;
+      padding: 23px;
       background: white;
-      padding: 20px;
-      border: 1px solid #e2e8df;
-      border-radius: 12px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
     }
 
-    .shop p,
-    .product p {
-      color: #657368;
-      line-height: 1.6;
-      margin: 8px 0 14px;
-    }
-
-    .product .emoji {
-      font-size: 42px;
-      margin-bottom: 12px;
-    }
-
-    .price {
-      color: #176b45;
-      font-size: 20px;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    .stock {
-      font-size: 13px;
-      color: #657368;
-      margin: 8px 0;
-    }
-
-    .cart-box {
-      margin-top: 20px;
-    }
-
-    .cart-item {
+    .cart-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8df;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .cart-item button {
-      padding: 6px 10px;
-      margin: 2px;
+    .cart-product {
+      flex: 1;
+      min-width: 0;
     }
 
-    .total {
-      margin-top: 18px;
-      font-size: 21px;
+    .cart-product small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-controls button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #c9dfce;
+      background: var(--light-green);
+      color: var(--green);
+      border-radius: 7px;
       font-weight: bold;
     }
 
-    .small-note {
-      font-size: 13px;
-      color: #657368;
-      margin-top: 10px;
+    .cart-bottom {
+      padding-top: 20px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 15px 0;
+    }
+
+    .about {
+      margin-top: 40px;
+      padding: 28px;
+      background: var(--light-green);
+      border-radius: 12px;
     }
 
     footer {
-      margin-top: 45px;
-      background: #173e2c;
-      color: white;
-      text-align: center;
+      margin-top: 35px;
       padding: 25px;
-      line-height: 1.8;
+      text-align: center;
+      background: #123d27;
+      color: white;
     }
 
-    @media (max-width: 500px) {
-      .hero {
-        padding: 22px;
+    @media (max-width: 550px) {
+      header {
+        justify-content: center;
+        text-align: center;
       }
 
-      .hero h2 {
-        font-size: 25px;
+      header a {
+        margin: 0 7px;
       }
 
-      .cart-item {
-        align-items: flex-start;
+      .cart-section {
+        padding: 15px;
+      }
+
+      .cart-row {
+        flex-wrap: wrap;
+      }
+
+      .quantity-controls {
+        gap: 7px;
       }
     }
   </style>
@@ -208,116 +303,87 @@
 <body>
 
   <header>
-    <h1>🛍️ Pakkathukadai</h1>
-    <p>Your neighbourhood. Your shops. Your community.</p>
+    <div class="logo">🛍️ Pakkathu Kadai</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#products">Products</a>
+      <a href="#cart">Cart (<span id="cartCount">0</span>)</a>
+    </nav>
   </header>
 
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#shops">Local Shops</a>
-    <a href="#products">Products</a>
-    <a href="#cart">My Cart (<span id="cartCount">0</span>)</a>
-  </nav>
+  <section class="hero" id="home">
+    <h1>Your Neighbourhood, One Click Away!</h1>
+    <p>Discover local shops and order your everyday essentials.</p>
+
+    <div class="search-box">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search for products or shops..."
+        aria-label="Search products or shops"
+      >
+    </div>
+  </section>
 
   <main>
-
-    <section class="hero" id="home">
-      <h2>Shop Local. Grow Together.</h2>
-      <p>
-        Discover nearby shops, explore everyday products,
-        and support your local community.
-      </p>
-
-      <div class="search">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search shops or products..."
-          oninput="renderProducts()"
-        >
-
-        <button onclick="renderProducts()">Search</button>
-      </div>
-    </section>
-
-    <section id="shops">
-      <h2 class="section-title">Explore Local Shops</h2>
-
-      <div class="shops">
-        <article class="shop">
-          <h3>🥦 Fresh Mart</h3>
-          <p>Vegetables and fruits</p>
-          <button onclick="filterShop('Fresh Mart')">
-            View Products
-          </button>
-        </article>
-
-        <article class="shop">
-          <h3>🛒 Daily Needs Store</h3>
-          <p>Groceries and essentials</p>
-          <button onclick="filterShop('Daily Needs Store')">
-            View Products
-          </button>
-        </article>
-
-        <article class="shop">
-          <h3>🥛 Milk & More</h3>
-          <p>Milk and dairy products</p>
-          <button onclick="filterShop('Milk & More')">
-            View Products
-          </button>
-        </article>
+    <section>
+      <h2 class="section-title">🏪 Shop by Store</h2>
+      <div class="shop-list" id="shopFilters">
+        <button class="shop-btn active" data-shop="all">All Shops</button>
       </div>
     </section>
 
     <section id="products">
-      <h2 class="section-title">Available Products</h2>
-      <div class="products" id="productList"></div>
-
-      <p class="small-note">
-        Product details and stock are loaded from Supabase.
+      <h2 class="section-title">🛒 Available Products</h2>
+      <p class="status" id="productStatus" role="status">
+        Connecting to the store...
       </p>
+      <div class="product-grid" id="productGrid"></div>
     </section>
 
-    <section id="cart">
-      <h2 class="section-title">Your Shopping Cart</h2>
+    <section class="cart-section" id="cart">
+      <h2 class="section-title">🧺 Your Cart</h2>
+      <div id="cartItems">
+        <p class="empty">Your cart is empty. Add some products!</p>
+      </div>
 
-      <div class="cart-box">
-        <div id="cartItems">Your cart is empty.</div>
+      <div class="cart-bottom">
+        <div class="cart-total">
+          <span>Total</span>
+          <span>₹<span id="cartTotal">0.00</span></span>
+        </div>
 
-        <p class="total">
-          Total: ₹<span id="cartTotal">0.00</span>
-        </p>
-
-        <button onclick="placeDemoOrder()">
+        <button
+          type="button"
+          class="primary-btn"
+          id="checkoutButton"
+          onclick="placeDemoOrder()"
+        >
           Proceed to Order
         </button>
-
-        <p class="small-note">
-          Demo only: orders are not sent to a shop yet.
-        </p>
       </div>
     </section>
 
-    <section id="about">
-      <h2 class="section-title">Why Pakkathukadai?</h2>
+    <section class="about" id="about">
+      <h2>About Pakkathu Kadai</h2>
       <p>
-        We connect customers with neighbourhood shops,
-        helping local businesses grow and making shopping easier.
+        We help customers discover nearby shops and shop conveniently
+        from one place. Support local businesses with every order.
       </p>
     </section>
-
   </main>
 
   <footer>
-    <p>Supporting Local. Building Community.</p>
-    <p>© 2026 Pakkathukadai</p>
+    <p>© 2026 Pakkathu Kadai | Supporting Local Businesses ❤️</p>
   </footer>
 
-  <!-- Load Supabase only once -->
+  <!-- Load the Supabase library only once -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
+    "use strict";
+
+    // Supabase connection
     const SUPABASE_URL =
       "https://qjywimxvejnkfbatukut.supabase.co";
 
@@ -329,67 +395,38 @@
       SUPABASE_KEY
     );
 
-    // Sample products are used only if Supabase has not loaded
-    // successfully. Replace them with database products on success.
-    let products = [
-      {
-        id: 1,
-        name: "Tomatoes",
-        emoji: "🍅",
-        price: 40,
-        unit: "1 kg",
-        shop: "Fresh Mart",
-        quantity: 10
-      },
-      {
-        id: 2,
-        name: "Potatoes",
-        emoji: "🥔",
-        price: 35,
-        unit: "1 kg",
-        shop: "Fresh Mart",
-        quantity: 10
-      },
-      {
-        id: 3,
-        name: "Apples",
-        emoji: "🍎",
-        price: 120,
-        unit: "1 kg",
-        shop: "Fresh Mart",
-        quantity: 10
-      },
-      {
-        id: 4,
-        name: "Rice",
-        emoji: "🍚",
-        price: 65,
-        unit: "1 kg",
-        shop: "Daily Needs Store",
-        quantity: 10
-      },
-      {
-        id: 5,
-        name: "Cooking Oil",
-        emoji: "🫗",
-        price: 150,
-        unit: "1 litre",
-        shop: "Daily Needs Store",
-        quantity: 10
-      },
-      {
-        id: 6,
-        name: "Milk",
-        emoji: "🥛",
-        price: 30,
-        unit: "500 ml",
-        shop: "Milk & More",
-        quantity: 10
-      }
-    ];
+    // Application state
+    let products = [];
+    let cart = {};
+    let selectedShop = "all";
+    let searchTerm = "";
+    let productsLoaded = false;
 
-    const cart = {};
-    let selectedShop = "";
+    const productGrid = document.getElementById("productGrid");
+    const productStatus = document.getElementById("productStatus");
+    const cartItemsElement = document.getElementById("cartItems");
+    const cartCountElement = document.getElementById("cartCount");
+    const cartTotalElement = document.getElementById("cartTotal");
+    const searchInput = document.getElementById("searchInput");
+    const shopFilters = document.getElementById("shopFilters");
+
+    // Safe text rendering
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        const replacements = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+        return replacements[char];
+      });
+    }
+
+    function formatPrice(value) {
+      return Number(value).toFixed(2);
+    }
 
     function getProduct(id) {
       return products.find(function(product) {
@@ -397,161 +434,181 @@
       });
     }
 
-    function getEmoji(name) {
-      const value = String(name || "").toLowerCase();
-
-      if (value.includes("tomato")) return "🍅";
-      if (value.includes("potato")) return "🥔";
-      if (value.includes("apple")) return "🍎";
-      if (value.includes("rice")) return "🍚";
-      if (value.includes("oil")) return "🫗";
-      if (value.includes("milk")) return "🥛";
-      if (value.includes("bread")) return "🍞";
-      if (value.includes("egg")) return "🥚";
-      if (value.includes("onion")) return "🧅";
-      if (value.includes("banana")) return "🍌";
-
-      return "🛒";
+    function getShop(product) {
+      return product.shop_name || product.shop || "Local Store";
     }
 
+    function getStock(product) {
+      const stock = Number(product.quantity);
+      return Number.isFinite(stock) ? Math.max(0, stock) : 0;
+    }
+
+    // Load products from Supabase
     async function loadProducts() {
-      const { data, error } = await supabaseClient
-        .from("Products")
-        .select("id, name, price, quantity, shop_name, unit");
+      productStatus.textContent = "Loading products from Supabase...";
 
-      if (error) {
-        console.error("Error loading Supabase products:", error);
-        renderProducts();
-        return;
-      }
+      try {
+        const { data, error } = await supabaseClient
+          .from("Products")
+          .select("id, name, price, quantity, shop_name, unit");
 
-      if (!data || data.length === 0) {
-        console.warn("No products found in Supabase.");
-        products = [];
+        if (error) {
+          throw error;
+        }
+
+        if (!Array.isArray(data)) {
+          throw new Error("The products response was invalid.");
+        }
+
+        products = data.map(function(product) {
+          return {
+            ...product,
+            shop: product.shop_name || "Local Store",
+            price: Number(product.price),
+            quantity: Number(product.quantity)
+          };
+        }).filter(function(product) {
+          return product.id !== undefined &&
+            product.name &&
+            Number.isFinite(product.price) &&
+            product.price >= 0 &&
+            Number.isFinite(product.quantity);
+        });
+
+        productsLoaded = true;
+        renderShopFilters();
         renderProducts();
         renderCart();
-        return;
+
+        if (products.length === 0) {
+          productStatus.textContent =
+            "No products found. Add products to your Supabase Products table.";
+        } else {
+          productStatus.textContent =
+            products.length + " products loaded successfully.";
+        }
+
+      } catch (error) {
+        console.error("Supabase product loading error:", error);
+
+        productStatus.textContent =
+          "Could not load products. Check your Supabase connection and table permissions.";
+
+        productGrid.innerHTML = "";
       }
-
-      console.log("Supabase products loaded:", data);
-
-      products = data.map(function(product) {
-        return {
-          id: product.id,
-          name: product.name,
-          emoji: getEmoji(product.name),
-          price: Number(product.price),
-          unit: product.unit || "",
-          shop: product.shop_name || "Local Shop",
-          quantity: product.quantity
-        };
-      });
-
-      // Remove cart entries for products no longer in the database.
-      Object.keys(cart).forEach(function(id) {
-        if (!getProduct(id)) {
-          delete cart[id];
-        }
-      });
-
-      // Recheck existing cart quantities against the latest stock.
-      Object.keys(cart).forEach(function(id) {
-        const product = getProduct(id);
-
-        if (!product) {
-          delete cart[id];
-          return;
-        }
-
-        const stock = Number(product.quantity);
-
-        if (
-          product.quantity === null ||
-          product.quantity === undefined ||
-          product.quantity === "" ||
-          !Number.isFinite(stock) ||
-          stock <= 0
-        ) {
-          delete cart[id];
-        } else if (cart[id] > stock) {
-          cart[id] = stock;
-        }
-      });
-
-      renderProducts();
-      renderCart();
     }
 
+    // Create shop filter buttons
+    function renderShopFilters() {
+      const shops = [...new Set(
+        products.map(getShop).filter(Boolean)
+      )];
+
+      shopFilters.innerHTML = "";
+
+      const allButton = document.createElement("button");
+      allButton.type = "button";
+      allButton.className =
+        "shop-btn" + (selectedShop === "all" ? " active" : "");
+      allButton.textContent = "All Shops";
+      allButton.dataset.shop = "all";
+      shopFilters.appendChild(allButton);
+
+      shops.forEach(function(shop) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className =
+          "shop-btn" + (selectedShop === shop ? " active" : "");
+        button.textContent = shop;
+        button.dataset.shop = shop;
+        shopFilters.appendChild(button);
+      });
+    }
+
+    shopFilters.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-shop]");
+
+      if (!button) return;
+
+      selectedShop = button.dataset.shop;
+      renderShopFilters();
+      renderProducts();
+    });
+
+    // Render products
     function renderProducts() {
-      const query = document
-        .getElementById("searchInput")
-        .value.toLowerCase()
-        .trim();
-
-      const filtered = products.filter(function(product) {
-        const matchesSearch =
-          String(product.name).toLowerCase().includes(query) ||
-          String(product.shop).toLowerCase().includes(query);
-
+      const filteredProducts = products.filter(function(product) {
         const matchesShop =
-          selectedShop === "" ||
-          product.shop === selectedShop;
+          selectedShop === "all" || getShop(product) === selectedShop;
 
-        return matchesSearch && matchesShop;
+        const searchText = (
+          String(product.name) + " " + getShop(product)
+        ).toLowerCase();
+
+        const matchesSearch = searchText.includes(
+          searchTerm.toLowerCase()
+        );
+
+        return matchesShop && matchesSearch;
       });
 
-      const list = document.getElementById("productList");
-
-      if (filtered.length === 0) {
-        list.innerHTML = "<p>No matching products found.</p>";
+      if (!productsLoaded) {
+        productGrid.innerHTML = "";
         return;
       }
 
-      list.innerHTML = filtered.map(function(product) {
-        const stock = Number(product.quantity);
+      if (filteredProducts.length === 0) {
+        productGrid.innerHTML =
+          '<p class="empty">No matching products found.</p>';
+        return;
+      }
 
-        const validStock =
-          product.quantity !== null &&
-          product.quantity !== undefined &&
-          product.quantity !== "" &&
-          Number.isFinite(stock) &&
-          stock >= 0;
-
-        const outOfStock = validStock && stock === 0;
-        const stockText = !validStock
-          ? "Stock unavailable"
-          : outOfStock
-            ? "Out of stock"
-            : "Available: " + stock;
+      productGrid.innerHTML = filteredProducts.map(function(product) {
+        const stock = getStock(product);
+        const quantityInCart = Number(cart[String(product.id)] || 0);
+        const outOfStock = stock <= 0;
+        const maxReached = quantityInCart >= stock;
 
         return `
-          <article class="product">
-            <div class="emoji">${product.emoji}</div>
-            <h3>${product.name}</h3>
-            <p>${product.shop}</p>
-            <p>${product.unit}</p>
-            <div class="price">₹${product.price.toFixed(2)}</div>
-            <p class="stock">${stockText}</p>
+          <article class="product-card">
+            <div class="product-icon" aria-hidden="true">🛍️</div>
+            <h3>${escapeHTML(product.name)}</h3>
+            <p class="shop-name">🏪 ${escapeHTML(getShop(product))}</p>
+            <p class="price">₹${formatPrice(product.price)}
+              ${product.unit ? "/ " + escapeHTML(product.unit) : ""}
+            </p>
+            <p class="stock">
+              ${outOfStock ? "Out of stock" : "Stock: " + stock}
+            </p>
             <button
-              onclick="addToCart(${JSON.stringify(String(product.id))})"
-              ${outOfStock ? "disabled" : ""}
+              type="button"
+              class="primary-btn"
+              data-add="${escapeHTML(product.id)}"
+              ${outOfStock || maxReached ? "disabled" : ""}
             >
-              Add to Cart
+              ${
+                outOfStock
+                  ? "Out of Stock"
+                  : maxReached
+                    ? "Maximum Stock Added"
+                    : "Add to Cart"
+              }
             </button>
           </article>
         `;
       }).join("");
     }
 
-    function filterShop(shopName) {
-      selectedShop = shopName;
-      document.getElementById("searchInput").value = "";
-      renderProducts();
-      document.getElementById("products").scrollIntoView({
-        behavior: "smooth"
-      });
-    }
+    // Add-to-cart button handler
+    productGrid.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-add]");
 
+      if (!button) return;
+
+      addToCart(button.dataset.add);
+    });
+
+    // Add a product to the cart
     function addToCart(id) {
       const product = getProduct(id);
 
@@ -560,144 +617,165 @@
         return;
       }
 
-      const availableStock = Number(product.quantity);
+      const currentQuantity = Number(cart[String(id)] || 0);
+      const stock = getStock(product);
 
-      if (
-        product.quantity === null ||
-        product.quantity === undefined ||
-        product.quantity === "" ||
-        !Number.isFinite(availableStock) ||
-        availableStock < 0
-      ) {
-        alert("Stock information is unavailable for this product.");
-        return;
-      }
-
-      if (availableStock === 0) {
+      if (stock <= 0) {
         alert("Sorry, this product is out of stock.");
         return;
       }
 
-      const currentQuantity = Number(cart[id] || 0);
-
-      if (currentQuantity + 1 > availableStock) {
-        alert("Only " + availableStock + " units are available.");
+      if (currentQuantity >= stock) {
+        alert("You cannot add more than the available stock.");
         return;
       }
 
-      cart[id] = currentQuantity + 1;
+      cart[String(id)] = currentQuantity + 1;
+
       renderCart();
+      renderProducts();
     }
 
+    // Increase or decrease cart quantity
     function changeQuantity(id, amount) {
       const product = getProduct(id);
 
-      if (!product) {
-        alert("Product not found. Please refresh the page.");
+      if (!product) return;
+
+      const key = String(id);
+      const currentQuantity = Number(cart[key] || 0);
+      const nextQuantity = currentQuantity + amount;
+
+      if (nextQuantity <= 0) {
+        delete cart[key];
+      } else if (nextQuantity > getStock(product)) {
+        alert("You cannot exceed the available stock.");
         return;
+      } else {
+        cart[key] = nextQuantity;
       }
 
-      const currentQuantity = Number(cart[id] || 0);
-      const newQuantity = currentQuantity + amount;
-
-      // Allow the customer to remove the product from the cart.
-      if (newQuantity <= 0) {
-        delete cart[id];
-        renderCart();
-        return;
-      }
-
-      const availableStock = Number(product.quantity);
-
-      if (
-        product.quantity === null ||
-        product.quantity === undefined ||
-        product.quantity === "" ||
-        !Number.isFinite(availableStock) ||
-        availableStock < 0
-      ) {
-        alert("Stock information is unavailable. Please try again.");
-        return;
-      }
-
-      if (newQuantity > availableStock) {
-        alert("Only " + availableStock + " units are available.");
-        return;
-      }
-
-      cart[id] = newQuantity;
       renderCart();
+      renderProducts();
     }
 
+    // Cart button handler
+    cartItemsElement.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-action]");
+
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "increase") {
+        changeQuantity(id, 1);
+      } else if (action === "decrease") {
+        changeQuantity(id, -1);
+      }
+    });
+
+    // Display cart contents and total
     function renderCart() {
-      const items = Object.keys(cart);
-      const cartItems = document.getElementById("cartItems");
+      const cartKeys = Object.keys(cart).filter(function(id) {
+        return Number(cart[id]) > 0 && getProduct(id);
+      });
 
       let total = 0;
-      let count = 0;
+      let totalQuantity = 0;
 
-      if (items.length === 0) {
-        cartItems.textContent = "Your cart is empty.";
+      if (cartKeys.length === 0) {
+        cartItemsElement.innerHTML =
+          '<p class="empty">Your cart is empty. Add some products!</p>';
       } else {
-        cartItems.innerHTML = items.map(function(id) {
+        cartItemsElement.innerHTML = cartKeys.map(function(id) {
           const product = getProduct(id);
-
-          if (!product) {
-            delete cart[id];
-            return "";
-          }
-
           const quantity = Number(cart[id]);
-          const subtotal = Number(product.price) * quantity;
+          const subtotal = product.price * quantity;
 
           total += subtotal;
-          count += quantity;
+          totalQuantity += quantity;
 
           return `
-            <div class="cart-item">
-              <div>
-                <strong>${product.name}</strong>
-                <br>
-                <span>${product.shop}</span>
-                <br>
-                ₹${Number(product.price).toFixed(2)} × ${quantity}
-                = ₹${subtotal.toFixed(2)}
+            <div class="cart-row">
+              <div class="cart-product">
+                <strong>${escapeHTML(product.name)}</strong>
+                <small>₹${formatPrice(product.price)} each</small>
+                <small>Subtotal: ₹${formatPrice(subtotal)}</small>
               </div>
-              <div>
-                <button
-                  onclick="changeQuantity(${JSON.stringify(String(id))}, -1)"
-                  aria-label="Decrease ${product.name}"
-                >−</button>
-                <button
-                  onclick="changeQuantity(${JSON.stringify(String(id))}, 1)"
-                  aria-label="Increase ${product.name}"
-                >+</button>
+
+              <div class="quantity-controls">
+                <button type="button"
+                  data-action="decrease"
+                  data-id="${escapeHTML(id)}"
+                  aria-label="Decrease quantity">−</button>
+
+                <span>${quantity}</span>
+
+                <button type="button"
+                  data-action="increase"
+                  data-id="${escapeHTML(id)}"
+                  aria-label="Increase quantity"
+                  ${quantity >= getStock(product) ? "disabled" : ""}>+</button>
               </div>
             </div>
           `;
         }).join("");
       }
 
-      document.getElementById("cartCount").textContent = count;
-      document.getElementById("cartTotal").textContent =
-        total.toFixed(2);
+      cartCountElement.textContent = totalQuantity;
+      cartTotalElement.textContent = formatPrice(total);
+
+      const checkoutButton = document.getElementById("checkoutButton");
+      checkoutButton.disabled = cartKeys.length === 0;
     }
 
+    // Search products
+    searchInput.addEventListener("input", function() {
+      searchTerm = searchInput.value.trim();
+      renderProducts();
+    });
 
-function placeDemoOrder() {
-  if (Object.keys(cart).length === 0) {
-    alert("Please add products to your cart first.");
-    return;
-  }
+    // Navigate to checkout
+    function placeDemoOrder() {
+      const cartKeys = Object.keys(cart).filter(function(id) {
+        return Number(cart[id]) > 0 && getProduct(id);
+      });
 
-  sessionStorage.setItem("pakkathuCart", JSON.stringify(cart));
-  sessionStorage.setItem("pakkathuProducts", JSON.stringify(products));
+      if (cartKeys.length === 0) {
+        alert("Please add products to your cart first.");
+        return;
+      }
 
-  window.location.href = "checkout.html";
-}
+      // Recheck quantities against the currently loaded stock.
+      for (const id of cartKeys) {
+        const product = getProduct(id);
 
-    // Render the page immediately, then load real database products.
-    renderProducts();
+        if (!product || Number(cart[id]) > getStock(product)) {
+          alert("A product quantity is no longer available. Please update your cart.");
+          return;
+        }
+      }
+
+      try {
+        sessionStorage.setItem(
+          "pakkathuCart",
+          JSON.stringify(cart)
+        );
+
+        sessionStorage.setItem(
+          "pakkathuProducts",
+          JSON.stringify(products)
+        );
+
+        window.location.href = "checkout.html";
+      } catch (error) {
+        console.error("Unable to open checkout:", error);
+        alert("Could not open checkout. Please try again.");
+      }
+    }
+
+    // Start the application
     renderCart();
     loadProducts();
   </script>
