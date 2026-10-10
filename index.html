@@ -416,10 +416,11 @@ let products = [
       }
 
       products = data.map(function(product) {
+        
         const name = product.name.toLowerCase();
 
         let emoji = "🛒";
-
+        console.log("Supabase products:", data);
         if (name.includes("tomato")) emoji = "🍅";
         else if (name.includes("potato")) emoji = "🥔";
         else if (name.includes("apple")) emoji = "🍎";
