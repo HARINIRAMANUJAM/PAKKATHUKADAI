@@ -1,0 +1,393 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Checkout | Pakkathukadai</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f9f4;
+      color: #24352a;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #176b45;
+      color: white;
+      padding: 22px 7%;
+    }
+
+    header h1 {
+      font-size: 27px;
+    }
+
+    header p {
+      color: #e0f3e7;
+      margin-top: 5px;
+    }
+
+    main {
+      max-width: 850px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #176b45;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .checkout-card {
+      background: white;
+      border: 1px solid #e2e8df;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      color: #176b45;
+    }
+
+    .form-group {
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #b8cbb9;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    button {
+      background: #176b45;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 13px 18px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #105435;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8df;
+    }
+
+    .total {
+      font-size: 21px;
+      font-weight: bold;
+      margin-top: 18px;
+    }
+
+    .note {
+      color: #657368;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    footer {
+      background: #173e2c;
+      color: white;
+      text-align: center;
+      padding: 22px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 500px) {
+      .checkout-card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>🛍️ Pakkathukadai</h1>
+    <p>Secure and simple local shopping</p>
+  </header>
+
+  <main>
+    <a class="back-link" href="index.html">
+      ← Back to shopping
+    </a>
+
+    <section class="checkout-card">
+      <h2>📦 Your Order Summary</h2>
+
+      <div id="orderItems">
+        Loading your cart...
+      </div>
+
+      <p class="total">
+        Total: ₹<span id="orderTotal">0.00</span>
+      </p>
+
+      <p class="note">
+        Your cart details are read from this browser's session storage.
+      </p>
+    </section>
+
+    <section class="checkout-card">
+      <h2>👤 Customer Details</h2>
+
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="customerName">Full Name *</label>
+          <input
+            id="customerName"
+            name="customerName"
+            type="text"
+            maxlength="100"
+            autocomplete="name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            placeholder="10-digit mobile number"
+            autocomplete="tel"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="address">Delivery Address *</label>
+          <textarea
+            id="address"
+            name="address"
+            maxlength="500"
+            autocomplete="street-address"
+            placeholder="House number, street, area, city and PIN code"
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit">
+          Review Order Details
+        </button>
+
+        <p id="message" class="message" role="status"></p>
+
+        <p class="note">
+          This is a checkout preview. No real order or payment is
+          submitted yet.
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    Supporting Local. Building Community.
+    <br>
+    © 2026 Pakkathukadai
+  </footer>
+
+  <script>
+    const orderItemsElement =
+      document.getElementById("orderItems");
+
+    const orderTotalElement =
+      document.getElementById("orderTotal");
+
+    const messageElement =
+      document.getElementById("message");
+
+    let checkoutItems = [];
+
+    function loadCheckoutCart() {
+      try {
+        const savedCart = sessionStorage.getItem("pakkathuCart");
+        const savedProducts = sessionStorage.getItem("pakkathuProducts");
+
+        if (!savedCart || !savedProducts) {
+          orderItemsElement.textContent =
+            "Your cart has not been connected yet. Return to shopping.";
+
+          return;
+        }
+
+        const cart = JSON.parse(savedCart);
+        const products = JSON.parse(savedProducts);
+
+        if (
+          !cart ||
+          typeof cart !== "object" ||
+          !Array.isArray(products)
+        ) {
+          throw new Error("Invalid cart data.");
+        }
+
+        checkoutItems = Object.keys(cart).map(function(id) {
+          const product = products.find(function(item) {
+            return String(item.id) === String(id);
+          });
+
+          if (!product) return null;
+
+          const quantity = Number(cart[id]);
+          const price = Number(product.price);
+
+          if (
+            !Number.isInteger(quantity) ||
+            quantity <= 0 ||
+            !Number.isFinite(price) ||
+            price < 0
+          ) {
+            return null;
+          }
+
+          return {
+            id: product.id,
+            name: product.name,
+            shop: product.shop,
+            price: price,
+            quantity: quantity,
+            subtotal: price * quantity
+          };
+        }).filter(Boolean);
+
+        renderOrderSummary();
+      } catch (error) {
+        console.error("Unable to load cart:", error);
+
+        orderItemsElement.textContent =
+          "Unable to load your cart. Please return to shopping.";
+      }
+    }
+
+    function renderOrderSummary() {
+      if (checkoutItems.length === 0) {
+        orderItemsElement.textContent = "Your cart is empty.";
+        orderTotalElement.textContent = "0.00";
+        return;
+      }
+
+      orderItemsElement.innerHTML = checkoutItems.map(function(item) {
+        return `
+          <div class="order-item">
+            <div>
+              <strong>${escapeHTML(item.name)}</strong>
+              <br>
+              <small>${escapeHTML(item.shop || "Local Shop")}</small>
+              <br>
+              ${item.quantity} × ₹${item.price.toFixed(2)}
+            </div>
+            <strong>₹${item.subtotal.toFixed(2)}</strong>
+          </div>
+        `;
+      }).join("");
+
+      const total = checkoutItems.reduce(function(sum, item) {
+        return sum + item.subtotal;
+      }, 0);
+
+      orderTotalElement.textContent = total.toFixed(2);
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function(character) {
+        const entities = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+
+        return entities[character];
+      });
+    }
+
+    document.getElementById("checkoutForm")
+      .addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        if (checkoutItems.length === 0) {
+          messageElement.textContent =
+            "Your cart is empty or not connected. Return to shopping first.";
+          return;
+        }
+
+        const customerName =
+          document.getElementById("customerName").value.trim();
+
+        const phone =
+          document.getElementById("phone").value.trim();
+
+        const address =
+          document.getElementById("address").value.trim();
+
+        if (!/^[0-9]{10}$/.test(phone)) {
+          messageElement.textContent =
+            "Enter a valid 10-digit phone number.";
+          return;
+        }
+
+        const total = checkoutItems.reduce(function(sum, item) {
+          return sum + item.subtotal;
+        }, 0);
+
+        messageElement.textContent =
+          "Checkout details validated. Total: ₹" +
+          total.toFixed(2) +
+          ". Real order submission is not connected yet.";
+      });
+
+    loadCheckoutCart();
+  </script>
+
+</body>
+</html>
