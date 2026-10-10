@@ -402,7 +402,7 @@ let products = [
     
     async function loadProducts() {
       const { data, error } = await supabaseClient
-        .from("products")
+        .from("Products")
         .select("id, name, price, quantity, shop_name, unit");
 
       if (error) {
