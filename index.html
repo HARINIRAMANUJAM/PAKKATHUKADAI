@@ -392,14 +392,54 @@ let products = [
         `;
       }).join("");
     }
-
+    
     function filterShop(shopName) {
       selectedShop = shopName;
       document.getElementById("searchInput").value = "";
       renderProducts();
       document.getElementById("products").scrollIntoView();
     }
+    
+    async function loadProducts() {
+      const { data, error } = await supabaseClient
+        .from("products")
+        .select("id, name, price, quantity, shop_name, unit");
 
+      if (error) {
+        console.error("Error loading products:", error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log("No products found in Supabase.");
+        return;
+      }
+
+      products = data.map(function(product) {
+        const name = product.name.toLowerCase();
+
+        let emoji = "🛒";
+
+        if (name.includes("tomato")) emoji = "🍅";
+        else if (name.includes("potato")) emoji = "🥔";
+        else if (name.includes("apple")) emoji = "🍎";
+        else if (name.includes("rice")) emoji = "🍚";
+        else if (name.includes("oil")) emoji = "🫗";
+        else if (name.includes("milk")) emoji = "🥛";
+
+        return {
+          id: product.id,
+          name: product.name,
+          emoji: emoji,
+          price: Number(product.price),
+          unit: product.unit || "",
+          shop: product.shop_name || "Local Shop",
+          quantity: product.quantity
+        };
+      });
+
+      renderProducts();
+    }
     function addToCart(id) {
       if (!cart[id]) {
         cart[id] = 0;
@@ -511,6 +551,7 @@ let products = [
     SUPABASE_URL,
     SUPABASE_KEY
   );
+    loadProducts();
 </script>
 </body>
 </html>
