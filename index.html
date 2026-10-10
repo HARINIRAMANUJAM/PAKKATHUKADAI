@@ -100,26 +100,33 @@
       background: #105435;
     }
 
+    button:disabled {
+      background: #aab5ac;
+      cursor: not-allowed;
+    }
+
     .section-title {
       margin: 30px 0 16px;
     }
 
-    .shops, .products {
+    .shops,
+    .products {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fit, minmax(210px, 1fr)
-      );
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 16px;
     }
 
-    .shop, .product, .cart-box {
+    .shop,
+    .product,
+    .cart-box {
       background: white;
       padding: 20px;
       border: 1px solid #e2e8df;
       border-radius: 12px;
     }
 
-    .shop p, .product p {
+    .shop p,
+    .product p {
       color: #657368;
       line-height: 1.6;
       margin: 8px 0 14px;
@@ -137,6 +144,12 @@
       margin: 10px 0;
     }
 
+    .stock {
+      font-size: 13px;
+      color: #657368;
+      margin: 8px 0;
+    }
+
     .cart-box {
       margin-top: 20px;
     }
@@ -152,6 +165,7 @@
 
     .cart-item button {
       padding: 6px 10px;
+      margin: 2px;
     }
 
     .total {
@@ -183,6 +197,10 @@
       .hero h2 {
         font-size: 25px;
       }
+
+      .cart-item {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -211,14 +229,14 @@
       </p>
 
       <div class="search">
-        <input id="searchInput"
+        <input
+          id="searchInput"
           type="text"
           placeholder="Search shops or products..."
-          oninput="renderProducts()">
+          oninput="renderProducts()"
+        >
 
-        <button onclick="renderProducts()">
-          Search
-        </button>
+        <button onclick="renderProducts()">Search</button>
       </div>
     </section>
 
@@ -255,8 +273,9 @@
     <section id="products">
       <h2 class="section-title">Available Products</h2>
       <div class="products" id="productList"></div>
+
       <p class="small-note">
-        Sample products and prices for demonstration.
+        Product details and stock are loaded from Supabase.
       </p>
     </section>
 
@@ -295,62 +314,173 @@
     <p>© 2026 Pakkathukadai</p>
   </footer>
 
+  <!-- Load Supabase only once -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    
-let products = [
-  {
-    id: 1,
-    name: "Tomatoes",
-    emoji: "🍅",
-    price: 40,
-    unit: "1 kg",
-    shop: "Fresh Mart"
-  },
-  {
-    id: 2,
-    name: "Potatoes",
-    emoji: "🥔",
-    price: 35,
-    unit: "1 kg",
-    shop: "Fresh Mart"
-  },
-  {
-    id: 3,
-    name: "Apples",
-    emoji: "🍎",
-    price: 120,
-    unit: "1 kg",
-    shop: "Fresh Mart"
-  },
-  {
-    id: 4,
-    name: "Rice",
-    emoji: "🍚",
-    price: 65,
-    unit: "1 kg",
-    shop: "Daily Needs Store"
-  },
-  {
-    id: 5,
-    name: "Cooking Oil",
-    emoji: "🫗",
-    price: 150,
-    unit: "1 litre",
-    shop: "Daily Needs Store"
-  },
-  {
-    id: 6,
-    name: "Milk",
-    emoji: "🥛",
-    price: 30,
-    unit: "500 ml",
-    shop: "Milk & More"
-  }
-];
+    const SUPABASE_URL =
+      "https://qjywimxvejnkfbatukut.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    // Sample products are used only if Supabase has not loaded
+    // successfully. Replace them with database products on success.
+    let products = [
+      {
+        id: 1,
+        name: "Tomatoes",
+        emoji: "🍅",
+        price: 40,
+        unit: "1 kg",
+        shop: "Fresh Mart",
+        quantity: 10
+      },
+      {
+        id: 2,
+        name: "Potatoes",
+        emoji: "🥔",
+        price: 35,
+        unit: "1 kg",
+        shop: "Fresh Mart",
+        quantity: 10
+      },
+      {
+        id: 3,
+        name: "Apples",
+        emoji: "🍎",
+        price: 120,
+        unit: "1 kg",
+        shop: "Fresh Mart",
+        quantity: 10
+      },
+      {
+        id: 4,
+        name: "Rice",
+        emoji: "🍚",
+        price: 65,
+        unit: "1 kg",
+        shop: "Daily Needs Store",
+        quantity: 10
+      },
+      {
+        id: 5,
+        name: "Cooking Oil",
+        emoji: "🫗",
+        price: 150,
+        unit: "1 litre",
+        shop: "Daily Needs Store",
+        quantity: 10
+      },
+      {
+        id: 6,
+        name: "Milk",
+        emoji: "🥛",
+        price: 30,
+        unit: "500 ml",
+        shop: "Milk & More",
+        quantity: 10
+      }
+    ];
 
     const cart = {};
-
     let selectedShop = "";
+
+    function getProduct(id) {
+      return products.find(function(product) {
+        return String(product.id) === String(id);
+      });
+    }
+
+    function getEmoji(name) {
+      const value = String(name || "").toLowerCase();
+
+      if (value.includes("tomato")) return "🍅";
+      if (value.includes("potato")) return "🥔";
+      if (value.includes("apple")) return "🍎";
+      if (value.includes("rice")) return "🍚";
+      if (value.includes("oil")) return "🫗";
+      if (value.includes("milk")) return "🥛";
+      if (value.includes("bread")) return "🍞";
+      if (value.includes("egg")) return "🥚";
+      if (value.includes("onion")) return "🧅";
+      if (value.includes("banana")) return "🍌";
+
+      return "🛒";
+    }
+
+    async function loadProducts() {
+      const { data, error } = await supabaseClient
+        .from("Products")
+        .select("id, name, price, quantity, shop_name, unit");
+
+      if (error) {
+        console.error("Error loading Supabase products:", error);
+        renderProducts();
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.warn("No products found in Supabase.");
+        products = [];
+        renderProducts();
+        renderCart();
+        return;
+      }
+
+      console.log("Supabase products loaded:", data);
+
+      products = data.map(function(product) {
+        return {
+          id: product.id,
+          name: product.name,
+          emoji: getEmoji(product.name),
+          price: Number(product.price),
+          unit: product.unit || "",
+          shop: product.shop_name || "Local Shop",
+          quantity: product.quantity
+        };
+      });
+
+      // Remove cart entries for products no longer in the database.
+      Object.keys(cart).forEach(function(id) {
+        if (!getProduct(id)) {
+          delete cart[id];
+        }
+      });
+
+      // Recheck existing cart quantities against the latest stock.
+      Object.keys(cart).forEach(function(id) {
+        const product = getProduct(id);
+
+        if (!product) {
+          delete cart[id];
+          return;
+        }
+
+        const stock = Number(product.quantity);
+
+        if (
+          product.quantity === null ||
+          product.quantity === undefined ||
+          product.quantity === "" ||
+          !Number.isFinite(stock) ||
+          stock <= 0
+        ) {
+          delete cart[id];
+        } else if (cart[id] > stock) {
+          cart[id] = stock;
+        }
+      });
+
+      renderProducts();
+      renderCart();
+    }
 
     function renderProducts() {
       const query = document
@@ -360,8 +490,8 @@ let products = [
 
       const filtered = products.filter(function(product) {
         const matchesSearch =
-          product.name.toLowerCase().includes(query) ||
-          product.shop.toLowerCase().includes(query);
+          String(product.name).toLowerCase().includes(query) ||
+          String(product.shop).toLowerCase().includes(query);
 
         const matchesShop =
           selectedShop === "" ||
@@ -378,174 +508,174 @@ let products = [
       }
 
       list.innerHTML = filtered.map(function(product) {
+        const stock = Number(product.quantity);
+
+        const validStock =
+          product.quantity !== null &&
+          product.quantity !== undefined &&
+          product.quantity !== "" &&
+          Number.isFinite(stock) &&
+          stock >= 0;
+
+        const outOfStock = validStock && stock === 0;
+        const stockText = !validStock
+          ? "Stock unavailable"
+          : outOfStock
+            ? "Out of stock"
+            : "Available: " + stock;
+
         return `
           <article class="product">
             <div class="emoji">${product.emoji}</div>
             <h3>${product.name}</h3>
             <p>${product.shop}</p>
             <p>${product.unit}</p>
-            <div class="price">₹${product.price}</div>
-            <button onclick="addToCart(${product.id})">
+            <div class="price">₹${product.price.toFixed(2)}</div>
+            <p class="stock">${stockText}</p>
+            <button
+              onclick="addToCart(${JSON.stringify(String(product.id))})"
+              ${outOfStock ? "disabled" : ""}
+            >
               Add to Cart
             </button>
           </article>
         `;
       }).join("");
     }
-    
+
     function filterShop(shopName) {
       selectedShop = shopName;
       document.getElementById("searchInput").value = "";
       renderProducts();
-      document.getElementById("products").scrollIntoView();
-    }
-    
-    async function loadProducts() {
-      const { data, error } = await supabaseClient
-        .from("Products")
-        .select("id, name, price, quantity, shop_name, unit");
-
-      if (error) {
-        console.error("Error loading products:", error);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        console.log("No products found in Supabase.");
-        return;
-      }
-
-      products = data.map(function(product) {
-        
-        const name = product.name.toLowerCase();
-
-        let emoji = "🛒";
-        console.log("Supabase products:", data);
-        if (name.includes("tomato")) emoji = "🍅";
-        else if (name.includes("potato")) emoji = "🥔";
-        else if (name.includes("apple")) emoji = "🍎";
-        else if (name.includes("rice")) emoji = "🍚";
-        else if (name.includes("oil")) emoji = "🫗";
-        else if (name.includes("milk")) emoji = "🥛";
-
-        return {
-          id: product.id,
-          name: product.name,
-          emoji: emoji,
-          price: Number(product.price),
-          unit: product.unit || "",
-          shop: product.shop_name || "Local Shop",
-          quantity: product.quantity
-        };
+      document.getElementById("products").scrollIntoView({
+        behavior: "smooth"
       });
-
-      renderProducts();
     }
-    
-function addToCart(id) {
-  const product = products.find(function(item) {
-    return String(item.id) === String(id);
-  });
 
-  if (!product) return;
+    function addToCart(id) {
+      const product = getProduct(id);
 
-  const availableStock = Number(product.quantity);
+      if (!product) {
+        alert("Product not found. Please refresh the page.");
+        return;
+      }
 
-  if (!Number.isFinite(availableStock) || availableStock <= 0) {
-    alert("Sorry, this product is out of stock.");
-    return;
-  }
+      const availableStock = Number(product.quantity);
 
-  const currentQuantity = cart[id] || 0;
+      if (
+        product.quantity === null ||
+        product.quantity === undefined ||
+        product.quantity === "" ||
+        !Number.isFinite(availableStock) ||
+        availableStock < 0
+      ) {
+        alert("Stock information is unavailable for this product.");
+        return;
+      }
 
-  if (currentQuantity >= availableStock) {
-    alert("Sorry, only " + availableStock + " units are available.");
-    return;
-  }
+      if (availableStock === 0) {
+        alert("Sorry, this product is out of stock.");
+        return;
+      }
 
-  cart[id] = currentQuantity + 1;
-  renderCart();
-}
-    
-function changeQuantity(id, amount) {
-  const product = products.find(function(item) {
-    return String(item.id) === String(id);
-  });
+      const currentQuantity = Number(cart[id] || 0);
 
-  if (!product) return;
+      if (currentQuantity + 1 > availableStock) {
+        alert("Only " + availableStock + " units are available.");
+        return;
+      }
 
-  const currentQuantity = Number(cart[id] || 0);
-  const availableStock = Number(product.quantity);
-  const newQuantity = currentQuantity + amount;
+      cart[id] = currentQuantity + 1;
+      renderCart();
+    }
 
-  if (newQuantity <= 0) {
-    delete cart[id];
-    renderCart();
-    return;
-  }
+    function changeQuantity(id, amount) {
+      const product = getProduct(id);
 
-  if (
-    product.quantity === null ||
-    product.quantity === undefined ||
-    product.quantity === "" ||
-    !Number.isFinite(availableStock) ||
-    availableStock < 0
-  ) {
-    alert("Unable to verify stock. Please try again.");
-    return;
-  }
+      if (!product) {
+        alert("Product not found. Please refresh the page.");
+        return;
+      }
 
-  if (newQuantity > availableStock) {
-    alert("Only " + availableStock + " units are available.");
-    return;
-  }
+      const currentQuantity = Number(cart[id] || 0);
+      const newQuantity = currentQuantity + amount;
 
-  cart[id] = newQuantity;
-  renderCart();
-}
+      // Allow the customer to remove the product from the cart.
+      if (newQuantity <= 0) {
+        delete cart[id];
+        renderCart();
+        return;
+      }
+
+      const availableStock = Number(product.quantity);
+
+      if (
+        product.quantity === null ||
+        product.quantity === undefined ||
+        product.quantity === "" ||
+        !Number.isFinite(availableStock) ||
+        availableStock < 0
+      ) {
+        alert("Stock information is unavailable. Please try again.");
+        return;
+      }
+
+      if (newQuantity > availableStock) {
+        alert("Only " + availableStock + " units are available.");
+        return;
+      }
+
+      cart[id] = newQuantity;
+      renderCart();
+    }
+
     function renderCart() {
       const items = Object.keys(cart);
+      const cartItems = document.getElementById("cartItems");
+
       let total = 0;
       let count = 0;
 
       if (items.length === 0) {
-        document.getElementById("cartItems").textContent =
-          "Your cart is empty.";
+        cartItems.textContent = "Your cart is empty.";
       } else {
-        document.getElementById("cartItems").innerHTML =
-          items.map(function(id) {
-            const product = products.find(
-              function(item) {
-                return item.id === Number(id);
-              }
-            );
+        cartItems.innerHTML = items.map(function(id) {
+          const product = getProduct(id);
 
-            const quantity = cart[id];
-            const subtotal = product.price * quantity;
+          if (!product) {
+            delete cart[id];
+            return "";
+          }
 
-            total += subtotal;
-            count += quantity;
+          const quantity = Number(cart[id]);
+          const subtotal = Number(product.price) * quantity;
 
-            return `
-              <div class="cart-item">
-                <div>
-                  <strong>${product.name}</strong>
-                  <br>
-                  ₹${product.price} × ${quantity}
-                  = ₹${subtotal.toFixed(2)}
-                </div>
-                <div>
-                  <button onclick="changeQuantity(${id}, -1)">−</button>
-                  <button onclick="changeQuantity(${id}, 1)">+</button>
-                </div>
+          total += subtotal;
+          count += quantity;
+
+          return `
+            <div class="cart-item">
+              <div>
+                <strong>${product.name}</strong>
+                <br>
+                <span>${product.shop}</span>
+                <br>
+                ₹${Number(product.price).toFixed(2)} × ${quantity}
+                = ₹${subtotal.toFixed(2)}
               </div>
-            `;
-          }).join("");
-
-        // Count the quantities of all products.
-        count = items.reduce(function(sum, id) {
-          return sum + cart[id];
-        }, 0);
+              <div>
+                <button
+                  onclick="changeQuantity(${JSON.stringify(String(id))}, -1)"
+                  aria-label="Decrease ${product.name}"
+                >−</button>
+                <button
+                  onclick="changeQuantity(${JSON.stringify(String(id))}, 1)"
+                  aria-label="Increase ${product.name}"
+                >+</button>
+              </div>
+            </div>
+          `;
+        }).join("");
       }
 
       document.getElementById("cartCount").textContent = count;
@@ -562,41 +692,15 @@ function changeQuantity(id, amount) {
       alert(
         "Your demo cart total is ₹" +
         document.getElementById("cartTotal").textContent +
-        ". Real ordering will be connected to the backend later."
+        ". Real ordering will be connected later."
       );
     }
 
+    // Render the page immediately, then load real database products.
     renderProducts();
     renderCart();
-  </script>
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = https://qjywimxvejnkfbatukut.supabase.co/rest/v1/
-  const SUPABASE_KEY = sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
-</script>
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL =
-    "https://qjywimxvejnkfbatukut.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
-
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
     loadProducts();
-</script>
+  </script>
+
 </body>
 </html>
-
