@@ -440,14 +440,32 @@ let products = [
 
       renderProducts();
     }
-    function addToCart(id) {
-      if (!cart[id]) {
-        cart[id] = 0;
-      }
+    
+function addToCart(id) {
+  const product = products.find(function(item) {
+    return String(item.id) === String(id);
+  });
 
-      cart[id]++;
-      renderCart();
-    }
+  if (!product) return;
+
+  const availableStock = Number(product.quantity);
+
+  if (!Number.isFinite(availableStock) || availableStock <= 0) {
+    alert("Sorry, this product is out of stock.");
+    return;
+  }
+
+  const currentQuantity = cart[id] || 0;
+
+  if (currentQuantity >= availableStock) {
+    alert("Sorry, only " + availableStock + " units are available.");
+    return;
+  }
+
+  cart[id] = currentQuantity + 1;
+  renderCart();
+}
+
 
     function changeQuantity(id, amount) {
       cart[id] += amount;
