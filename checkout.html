@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Checkout | Pakkathukadai</title>
 
   <style>
@@ -27,9 +26,7 @@
       padding: 22px 7%;
     }
 
-    header h1 {
-      font-size: 27px;
-    }
+    header h1 { font-size: 27px; }
 
     header p {
       color: #e0f3e7;
@@ -63,9 +60,7 @@
       color: #176b45;
     }
 
-    .form-group {
-      margin-bottom: 17px;
-    }
+    .form-group { margin-bottom: 17px; }
 
     label {
       display: block;
@@ -73,8 +68,7 @@
       font-weight: bold;
     }
 
-    input,
-    textarea {
+    input, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid #b8cbb9;
@@ -98,8 +92,11 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #105435;
+    button:hover { background: #105435; }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .order-item {
@@ -128,6 +125,9 @@
       overflow-wrap: anywhere;
     }
 
+    .success { color: #176b45; }
+    .error { color: #b42318; }
+
     footer {
       background: #173e2c;
       color: white;
@@ -137,38 +137,30 @@
     }
 
     @media (max-width: 500px) {
-      .checkout-card {
-        padding: 18px;
-      }
+      .checkout-card { padding: 18px; }
     }
   </style>
 </head>
 
 <body>
-
   <header>
     <h1>🛍️ Pakkathukadai</h1>
     <p>Secure and simple local shopping</p>
   </header>
 
   <main>
-    <a class="back-link" href="index.html">
-      ← Back to shopping
-    </a>
+    <a class="back-link" href="index.html">← Back to shopping</a>
 
     <section class="checkout-card">
       <h2>📦 Your Order Summary</h2>
-
-      <div id="orderItems">
-        Loading your cart...
-      </div>
+      <div id="orderItems">Loading your cart...</div>
 
       <p class="total">
         Total: ₹<span id="orderTotal">0.00</span>
       </p>
 
       <p class="note">
-        Your cart details are read from this browser's session storage.
+        Check your items and quantities before placing your order.
       </p>
     </section>
 
@@ -215,15 +207,14 @@
           ></textarea>
         </div>
 
-        <button type="submit">
-          Review Order Details
+        <button id="submitButton" type="submit">
+          Place Order
         </button>
 
-        <p id="message" class="message" role="status"></p>
+        <p id="message" class="message" role="status" aria-live="polite"></p>
 
         <p class="note">
-          This is a checkout preview. No real order or payment is
-          submitted yet.
+          This saves your order details. Online payment is not included.
         </p>
       </form>
     </section>
@@ -235,107 +226,30 @@
     © 2026 Pakkathukadai
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script>
-    const orderItemsElement =
-      document.getElementById("orderItems");
+    "use strict";
 
-    const orderTotalElement =
-      document.getElementById("orderTotal");
+    const SUPABASE_URL =
+      "https://qjywimxvejnkfbatukut.supabase.co";
 
-    const messageElement =
-      document.getElementById("message");
+    const SUPABASE_KEY =
+      "sb_publishable_GXCZjhC8Y-bsq9AwngaAQ_nQziTHu6";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const orderItemsElement = document.getElementById("orderItems");
+    const orderTotalElement = document.getElementById("orderTotal");
+    const messageElement = document.getElementById("message");
+    const form = document.getElementById("checkoutForm");
+    const submitButton = document.getElementById("submitButton");
 
     let checkoutItems = [];
-
-    function loadCheckoutCart() {
-      try {
-        const savedCart = sessionStorage.getItem("pakkathuCart");
-        const savedProducts = sessionStorage.getItem("pakkathuProducts");
-
-        if (!savedCart || !savedProducts) {
-          orderItemsElement.textContent =
-            "Your cart has not been connected yet. Return to shopping.";
-
-          return;
-        }
-
-        const cart = JSON.parse(savedCart);
-        const products = JSON.parse(savedProducts);
-
-        if (
-          !cart ||
-          typeof cart !== "object" ||
-          !Array.isArray(products)
-        ) {
-          throw new Error("Invalid cart data.");
-        }
-
-        checkoutItems = Object.keys(cart).map(function(id) {
-          const product = products.find(function(item) {
-            return String(item.id) === String(id);
-          });
-
-          if (!product) return null;
-
-          const quantity = Number(cart[id]);
-          const price = Number(product.price);
-
-          if (
-            !Number.isInteger(quantity) ||
-            quantity <= 0 ||
-            !Number.isFinite(price) ||
-            price < 0
-          ) {
-            return null;
-          }
-
-          return {
-            id: product.id,
-            name: product.name,
-            shop: product.shop,
-            price: price,
-            quantity: quantity,
-            subtotal: price * quantity
-          };
-        }).filter(Boolean);
-
-        renderOrderSummary();
-      } catch (error) {
-        console.error("Unable to load cart:", error);
-
-        orderItemsElement.textContent =
-          "Unable to load your cart. Please return to shopping.";
-      }
-    }
-
-    function renderOrderSummary() {
-      if (checkoutItems.length === 0) {
-        orderItemsElement.textContent = "Your cart is empty.";
-        orderTotalElement.textContent = "0.00";
-        return;
-      }
-
-      orderItemsElement.innerHTML = checkoutItems.map(function(item) {
-        return `
-          <div class="order-item">
-            <div>
-              <strong>${escapeHTML(item.name)}</strong>
-              <br>
-              <small>${escapeHTML(item.shop || "Local Shop")}</small>
-              <br>
-              ${item.quantity} × ₹${item.price.toFixed(2)}
-            </div>
-            <strong>₹${item.subtotal.toFixed(2)}</strong>
-          </div>
-        `;
-      }).join("");
-
-      const total = checkoutItems.reduce(function(sum, item) {
-        return sum + item.subtotal;
-      }, 0);
-
-      orderTotalElement.textContent = total.toFixed(2);
-    }
+    let cartIsValid = false;
 
     function escapeHTML(value) {
       return String(value ?? "").replace(/[&<>"']/g, function(character) {
@@ -351,43 +265,219 @@
       });
     }
 
-    document.getElementById("checkoutForm")
-      .addEventListener("submit", function(event) {
-        event.preventDefault();
+    function getTotal() {
+      return checkoutItems.reduce(function(sum, item) {
+        return sum + item.subtotal;
+      }, 0);
+    }
 
-        if (checkoutItems.length === 0) {
-          messageElement.textContent =
-            "Your cart is empty or not connected. Return to shopping first.";
-          return;
+    function loadCheckoutCart() {
+      try {
+        const savedCart = sessionStorage.getItem("pakkathuCart");
+        const savedProducts = sessionStorage.getItem("pakkathuProducts");
+
+        if (!savedCart || !savedProducts) {
+          throw new Error("Cart data is missing.");
         }
 
-        const customerName =
-          document.getElementById("customerName").value.trim();
+        const cart = JSON.parse(savedCart);
+        const products = JSON.parse(savedProducts);
 
-        const phone =
-          document.getElementById("phone").value.trim();
-
-        const address =
-          document.getElementById("address").value.trim();
-
-        if (!/^[0-9]{10}$/.test(phone)) {
-          messageElement.textContent =
-            "Enter a valid 10-digit phone number.";
-          return;
+        if (
+          !cart ||
+          typeof cart !== "object" ||
+          Array.isArray(cart) ||
+          !Array.isArray(products)
+        ) {
+          throw new Error("Invalid cart data.");
         }
 
-        const total = checkoutItems.reduce(function(sum, item) {
-          return sum + item.subtotal;
-        }, 0);
+        const items = [];
 
-        messageElement.textContent =
-          "Checkout details validated. Total: ₹" +
+        for (const [id, rawQuantity] of Object.entries(cart)) {
+          const quantity = Number(rawQuantity);
+
+          if (!Number.isInteger(quantity) || quantity < 0) {
+            throw new Error("Invalid cart quantity.");
+          }
+
+          if (quantity === 0) continue;
+
+          const product = products.find(function(item) {
+            return String(item.id) === String(id);
+          });
+
+          if (!product) {
+            throw new Error("A cart product could not be found.");
+          }
+
+          const price = Number(product.price);
+          const stock = Number(product.quantity);
+
+          if (
+            !Number.isFinite(price) ||
+            price < 0 ||
+            !Number.isFinite(stock) ||
+            quantity > stock ||
+            !product.name
+          ) {
+            throw new Error("A product's price or available stock is invalid.");
+          }
+
+          items.push({
+            id: product.id,
+            name: String(product.name),
+            shop: String(product.shop_name || product.shop || "Local Shop"),
+            price: price,
+            quantity: quantity,
+            subtotal: price * quantity
+          });
+        }
+
+        checkoutItems = items;
+        cartIsValid = checkoutItems.length > 0;
+        renderOrderSummary();
+      } catch (error) {
+        console.error("Unable to load checkout cart:", error);
+
+        checkoutItems = [];
+        cartIsValid = false;
+        orderItemsElement.textContent =
+          "Your cart is empty or unavailable. Return to shopping.";
+        orderTotalElement.textContent = "0.00";
+      }
+
+      submitButton.disabled = !cartIsValid;
+    }
+
+    function renderOrderSummary() {
+      if (!cartIsValid) {
+        orderItemsElement.textContent = "Your cart is empty.";
+        orderTotalElement.textContent = "0.00";
+        return;
+      }
+
+      orderItemsElement.innerHTML = checkoutItems.map(function(item) {
+        return `
+          <div class="order-item">
+            <div>
+              <strong>${escapeHTML(item.name)}</strong>
+              <br>
+              <small>${escapeHTML(item.shop)}</small>
+              <br>
+              ${item.quantity} × ₹${item.price.toFixed(2)}
+            </div>
+            <strong>₹${item.subtotal.toFixed(2)}</strong>
+          </div>
+        `;
+      }).join("");
+
+      orderTotalElement.textContent = getTotal().toFixed(2);
+    }
+
+    function showMessage(message, type) {
+      messageElement.textContent = message;
+      messageElement.className = "message " + type;
+    }
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      if (!cartIsValid || checkoutItems.length === 0) {
+        showMessage("Your cart is empty. Return to shopping first.", "error");
+        return;
+      }
+
+      const customerName =
+        document.getElementById("customerName").value.trim();
+
+      const phone =
+        document.getElementById("phone").value.trim();
+
+      const address =
+        document.getElementById("address").value.trim();
+
+      if (!customerName || customerName.length > 100) {
+        showMessage("Enter a valid customer name.", "error");
+        return;
+      }
+
+      if (!/^[0-9]{10}$/.test(phone)) {
+        showMessage("Enter a valid 10-digit phone number.", "error");
+        return;
+      }
+
+      if (!address || address.length > 500) {
+        showMessage("Enter a valid delivery address.", "error");
+        return;
+      }
+
+      const total = getTotal();
+
+      if (!Number.isFinite(total) || total < 0) {
+        showMessage("The order total is invalid.", "error");
+        return;
+      }
+
+      const order = {
+        customer_name: customerName,
+        phone: phone,
+        delivery_address: address,
+        items: checkoutItems.map(function(item) {
+          return {
+            product_id: item.id,
+            name: item.name,
+            shop: item.shop,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.subtotal
+          };
+        }),
+        total: Number(total.toFixed(2)),
+        status: "pending"
+      };
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Saving Order...";
+      showMessage("Submitting your order...", "");
+
+      try {
+        const { error } = await supabaseClient
+          .from("orders")
+          .insert([order]);
+
+        if (error) throw error;
+
+        showMessage(
+          "Order placed successfully! Your order total is ₹" +
           total.toFixed(2) +
-          ". Real order submission is not connected yet.";
-      });
+          ". Status: Pending.",
+          "success"
+        );
+
+        sessionStorage.removeItem("pakkathuCart");
+        sessionStorage.removeItem("pakkathuProducts");
+
+        checkoutItems = [];
+        cartIsValid = false;
+        orderItemsElement.textContent = "Your order has been submitted.";
+        orderTotalElement.textContent = "0.00";
+        form.reset();
+      } catch (error) {
+        console.error("Order submission failed:", error);
+
+        showMessage(
+          "Could not save your order. " +
+          (error.message || "Please try again."),
+          "error"
+        );
+      } finally {
+        submitButton.textContent = "Place Order";
+        submitButton.disabled = !cartIsValid;
+      }
+    });
 
     loadCheckoutCart();
   </script>
-
 </body>
 </html>
