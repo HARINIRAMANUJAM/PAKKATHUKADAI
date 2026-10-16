@@ -1,12 +1,763 @@
-<!-- Load Supabase library first -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Load Pakkathu Kadai cart helpers -->
-<script src="cart.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pakkathu Kadai | Local Shopping</title>
 
-<script>
-  "use strict";
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  // Keep your existing Supabase connection,
-  // product loading, cart logic, and checkout code here.
-</script>
+    :root {
+      --green: #167d45;
+      --dark-green: #105b32;
+      --light-green: #eaf7ee;
+      --cream: #f8fbf7;
+      --text: #24332a;
+      --muted: #68766d;
+      --border: #e0e9e1;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    header {
+      background: var(--green);
+      color: white;
+      padding: 17px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: bold;
+    }
+
+    .hero {
+      padding: 45px 5% 35px;
+      text-align: center;
+      background: var(--light-green);
+    }
+
+    .hero h1 {
+      font-size: clamp(27px, 4vw, 40px);
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .search-box {
+      width: min(600px, 100%);
+      margin: auto;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1px solid #cbdccc;
+      border-radius: 10px;
+      outline-color: var(--green);
+      background: white;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 30px 5%;
+    }
+
+    .section-title {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    .shop-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .shop-btn {
+      border: 1px solid #c9dfce;
+      background: white;
+      color: var(--green);
+      border-radius: 25px;
+      padding: 9px 17px;
+      font-weight: bold;
+    }
+
+    .shop-btn.active,
+    .shop-btn:hover {
+      background: var(--green);
+      color: white;
+    }
+
+    .status {
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 8px;
+      background: #f0f4f0;
+      color: var(--muted);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      overflow: hidden;
+      padding: 19px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 3px 12px rgba(30, 70, 40, 0.04);
+    }
+
+    .product-icon {
+      background: var(--light-green);
+      border-radius: 10px;
+      min-height: 95px;
+      display: grid;
+      place-items: center;
+      font-size: 42px;
+    }
+
+    .product-card h3 {
+      font-size: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .shop-name {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
+    .stock {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .primary-btn {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-weight: bold;
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .primary-btn:hover {
+      background: var(--dark-green);
+    }
+
+    .primary-btn:disabled {
+      background: #aab5ac;
+      cursor: not-allowed;
+    }
+
+    .cart-section {
+      margin-top: 45px;
+      padding: 23px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+    }
+
+    .cart-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-product {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-product small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-controls button {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #c9dfce;
+      background: var(--light-green);
+      color: var(--green);
+      border-radius: 7px;
+      font-weight: bold;
+    }
+
+    .quantity-controls button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .cart-bottom {
+      padding-top: 20px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 15px 0;
+    }
+
+    .about {
+      margin-top: 40px;
+      padding: 28px;
+      background: var(--light-green);
+      border-radius: 12px;
+    }
+
+    footer {
+      margin-top: 35px;
+      padding: 25px;
+      text-align: center;
+      background: #123d27;
+      color: white;
+    }
+
+    @media (max-width: 550px) {
+      header {
+        justify-content: center;
+        text-align: center;
+      }
+
+      header a {
+        margin: 0 7px;
+      }
+
+      .cart-section {
+        padding: 15px;
+      }
+
+      .cart-row {
+        flex-wrap: wrap;
+      }
+
+      .quantity-controls {
+        gap: 7px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">🛍️ Pakkathu Kadai</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#products">Products</a>
+      <a href="#cart">Cart (<span id="cartCount">0</span>)</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="home">
+    <h1>Your Neighbourhood, One Click Away!</h1>
+    <p>Discover local shops and order your everyday essentials.</p>
+
+    <div class="search-box">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search for products or shops..."
+        aria-label="Search products or shops"
+      >
+    </div>
+  </section>
+
+  <main>
+    <section>
+      <h2 class="section-title">🏪 Shop by Store</h2>
+      <div class="shop-list" id="shopFilters">
+        <button type="button" class="shop-btn active" data-shop="all">
+          All Shops
+        </button>
+      </div>
+    </section>
+
+    <section id="products">
+      <h2 class="section-title">🛒 Available Products</h2>
+      <p class="status" id="productStatus" role="status">
+        Connecting to the store...
+      </p>
+      <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <section class="cart-section" id="cart">
+      <h2 class="section-title">🧺 Your Cart</h2>
+
+      <div id="cartItems">
+        <p class="empty">Your cart is empty. Add some products!</p>
+      </div>
+
+      <div class="cart-bottom">
+        <div class="cart-total">
+          <span>Total</span>
+          <span>₹<span id="cartTotal">0.00</span></span>
+        </div>
+
+        <button
+          type="button"
+          class="primary-btn"
+          id="checkoutButton"
+          onclick="placeDemoOrder()"
+          disabled
+        >
+          Proceed to Order
+        </button>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <h2>About Pakkathu Kadai</h2>
+      <p>
+        We help customers discover nearby shops and shop conveniently
+        from one place. Support local businesses with every order.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 Pakkathu Kadai | Supporting Local Businesses ❤️</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    "use strict";
+
+    const SUPABASE_URL =
+      "https://qjywimxvejnkfbatukut.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
+
+    let products = [];
+    let cart = {};
+    let selectedShop = "all";
+    let searchTerm = "";
+    let productsLoaded = false;
+
+    const productGrid = document.getElementById("productGrid");
+    const productStatus = document.getElementById("productStatus");
+    const cartItemsElement = document.getElementById("cartItems");
+    const cartCountElement = document.getElementById("cartCount");
+    const cartTotalElement = document.getElementById("cartTotal");
+    const searchInput = document.getElementById("searchInput");
+    const shopFilters = document.getElementById("shopFilters");
+    const checkoutButton = document.getElementById("checkoutButton");
+
+    let supabaseClient = null;
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        const replacements = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        };
+        return replacements[char];
+      });
+    }
+
+    function formatPrice(value) {
+      return Number(value).toFixed(2);
+    }
+
+    function getProduct(id) {
+      return products.find(function(product) {
+        return String(product.id) === String(id);
+      });
+    }
+
+    function getShop(product) {
+      return product.shop_name || product.shop || "Local Store";
+    }
+
+    function getStock(product) {
+      const stock = Number(product.quantity);
+      return Number.isFinite(stock) ? Math.max(0, stock) : 0;
+    }
+
+    async function loadProducts() {
+      productStatus.textContent = "Loading products from Supabase...";
+
+      try {
+        if (!window.supabase) {
+          throw new Error("Supabase library did not load. Check your internet connection.");
+        }
+
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY
+        );
+
+        const { data, error } = await supabaseClient
+          .from("Products")
+          .select("id, name, price, quantity, shop_name, unit");
+
+        if (error) {
+          throw error;
+        }
+
+        if (!Array.isArray(data)) {
+          throw new Error("The products response was invalid.");
+        }
+
+        products = data.map(function(product) {
+          return {
+            ...product,
+            shop: product.shop_name || "Local Store",
+            price: Number(product.price),
+            quantity: Number(product.quantity)
+          };
+        }).filter(function(product) {
+          return product.id !== undefined &&
+            product.name &&
+            Number.isFinite(product.price) &&
+            product.price >= 0 &&
+            Number.isFinite(product.quantity);
+        });
+
+        productsLoaded = true;
+        renderShopFilters();
+        renderProducts();
+        renderCart();
+
+        productStatus.textContent = products.length === 0
+          ? "No products found. Add products to your Supabase Products table."
+          : products.length + " products loaded successfully.";
+
+      } catch (error) {
+        console.error("Supabase product loading error:", error);
+        productStatus.textContent =
+          "Could not load products. Check your Supabase connection and table permissions.";
+        productGrid.innerHTML = "";
+      }
+    }
+
+    function renderShopFilters() {
+      const shops = [...new Set(
+        products.map(getShop).filter(Boolean)
+      )];
+
+      shopFilters.innerHTML = "";
+
+      const allButton = document.createElement("button");
+      allButton.type = "button";
+      allButton.className =
+        "shop-btn" + (selectedShop === "all" ? " active" : "");
+      allButton.textContent = "All Shops";
+      allButton.dataset.shop = "all";
+      shopFilters.appendChild(allButton);
+
+      shops.forEach(function(shop) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className =
+          "shop-btn" + (selectedShop === shop ? " active" : "");
+        button.textContent = shop;
+        button.dataset.shop = shop;
+        shopFilters.appendChild(button);
+      });
+    }
+
+    shopFilters.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-shop]");
+      if (!button) return;
+
+      selectedShop = button.dataset.shop;
+      renderShopFilters();
+      renderProducts();
+    });
+
+    function renderProducts() {
+      if (!productsLoaded) {
+        productGrid.innerHTML = "";
+        return;
+      }
+
+      const filteredProducts = products.filter(function(product) {
+        const matchesShop =
+          selectedShop === "all" || getShop(product) === selectedShop;
+
+        const searchText =
+          (String(product.name) + " " + getShop(product)).toLowerCase();
+
+        return matchesShop &&
+          searchText.includes(searchTerm.toLowerCase());
+      });
+
+      if (filteredProducts.length === 0) {
+        productGrid.innerHTML =
+          '<p class="empty">No matching products found.</p>';
+        return;
+      }
+
+      productGrid.innerHTML = filteredProducts.map(function(product) {
+        const stock = getStock(product);
+        const quantityInCart = Number(cart[String(product.id)] || 0);
+        const outOfStock = stock <= 0;
+        const maxReached = quantityInCart >= stock;
+
+        return `
+          <article class="product-card">
+            <div class="product-icon" aria-hidden="true">🛍️</div>
+            <h3>${escapeHTML(product.name)}</h3>
+            <p class="shop-name">🏪 ${escapeHTML(getShop(product))}</p>
+            <p class="price">
+              ₹${formatPrice(product.price)}
+              ${product.unit ? "/ " + escapeHTML(product.unit) : ""}
+            </p>
+            <p class="stock">
+              ${outOfStock ? "Out of stock" : "Stock: " + stock}
+            </p>
+            <button
+              type="button"
+              class="primary-btn"
+              data-add="${escapeHTML(product.id)}"
+              ${outOfStock || maxReached ? "disabled" : ""}
+            >
+              ${
+                outOfStock
+                  ? "Out of Stock"
+                  : maxReached
+                    ? "Maximum Stock Added"
+                    : "Add to Cart"
+              }
+            </button>
+          </article>
+        `;
+      }).join("");
+    }
+
+    productGrid.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-add]");
+      if (!button) return;
+
+      addToCart(button.dataset.add);
+    });
+
+    function addToCart(id) {
+      const product = getProduct(id);
+
+      if (!product) {
+        alert("Product not found. Please refresh the page.");
+        return;
+      }
+
+      const currentQuantity = Number(cart[String(id)] || 0);
+      const stock = getStock(product);
+
+      if (stock <= 0) {
+        alert("Sorry, this product is out of stock.");
+        return;
+      }
+
+      if (currentQuantity >= stock) {
+        alert("You cannot add more than the available stock.");
+        return;
+      }
+
+      cart[String(id)] = currentQuantity + 1;
+      renderCart();
+      renderProducts();
+    }
+
+    function changeQuantity(id, amount) {
+      const product = getProduct(id);
+      if (!product) return;
+
+      const key = String(id);
+      const currentQuantity = Number(cart[key] || 0);
+      const nextQuantity = currentQuantity + amount;
+
+      if (nextQuantity <= 0) {
+        delete cart[key];
+      } else if (nextQuantity > getStock(product)) {
+        alert("You cannot exceed the available stock.");
+        return;
+      } else {
+        cart[key] = nextQuantity;
+      }
+
+      renderCart();
+      renderProducts();
+    }
+
+    cartItemsElement.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const id = button.dataset.id;
+      const action = button.dataset.action;
+
+      if (action === "increase") {
+        changeQuantity(id, 1);
+      } else if (action === "decrease") {
+        changeQuantity(id, -1);
+      }
+    });
+
+    function renderCart() {
+      const cartKeys = Object.keys(cart).filter(function(id) {
+        return Number(cart[id]) > 0 && getProduct(id);
+      });
+
+      let total = 0;
+      let totalQuantity = 0;
+
+      if (cartKeys.length === 0) {
+        cartItemsElement.innerHTML =
+          '<p class="empty">Your cart is empty. Add some products!</p>';
+      } else {
+        cartItemsElement.innerHTML = cartKeys.map(function(id) {
+          const product = getProduct(id);
+          const quantity = Number(cart[id]);
+          const subtotal = product.price * quantity;
+
+          total += subtotal;
+          totalQuantity += quantity;
+
+          return `
+            <div class="cart-row">
+              <div class="cart-product">
+                <strong>${escapeHTML(product.name)}</strong>
+                <small>₹${formatPrice(product.price)} each</small>
+                <small>Subtotal: ₹${formatPrice(subtotal)}</small>
+              </div>
+
+              <div class="quantity-controls">
+                <button
+                  type="button"
+                  data-action="decrease"
+                  data-id="${escapeHTML(id)}"
+                  aria-label="Decrease quantity"
+                >−</button>
+
+                <span>${quantity}</span>
+
+                <button
+                  type="button"
+                  data-action="increase"
+                  data-id="${escapeHTML(id)}"
+                  aria-label="Increase quantity"
+                  ${quantity >= getStock(product) ? "disabled" : ""}
+                >+</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      cartCountElement.textContent = totalQuantity;
+      cartTotalElement.textContent = formatPrice(total);
+      checkoutButton.disabled = cartKeys.length === 0;
+    }
+
+    searchInput.addEventListener("input", function() {
+      searchTerm = searchInput.value.trim();
+      renderProducts();
+    });
+
+    function placeDemoOrder() {
+      const cartKeys = Object.keys(cart).filter(function(id) {
+        return Number(cart[id]) > 0 && getProduct(id);
+      });
+
+      if (cartKeys.length === 0) {
+        alert("Please add products to your cart first.");
+        return;
+      }
+
+      for (const id of cartKeys) {
+        const product = getProduct(id);
+
+        if (!product || Number(cart[id]) > getStock(product)) {
+          alert("A product quantity is no longer available. Please update your cart.");
+          return;
+        }
+      }
+
+      try {
+        sessionStorage.setItem("pakkathuCart", JSON.stringify(cart));
+        sessionStorage.setItem("pakkathuProducts", JSON.stringify(products));
+
+        window.location.href = "checkout.html";
+      } catch (error) {
+        console.error("Unable to open checkout:", error);
+        alert("Could not open checkout. Please try again.");
+      }
+    }
+
+    renderCart();
+    loadProducts();
+  </script>
+</body>
+</html>
