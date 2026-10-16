@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout | Pakkathukadai</title>
+  <title>Checkout | Pakkathu Kadai</title>
 
   <style>
     * {
@@ -15,216 +15,205 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #f7f9f4;
+      background: #f4f8f4;
       color: #24352a;
       line-height: 1.6;
     }
 
     header {
-      background: #176b45;
+      background: #123d27;
       color: white;
-      padding: 22px 7%;
+      padding: 20px;
+      text-align: center;
     }
 
-    header h1 { font-size: 27px; }
-
-    header p {
-      color: #e0f3e7;
-      margin-top: 5px;
+    header h1 {
+      font-size: 25px;
     }
 
     main {
       max-width: 850px;
       margin: 30px auto;
-      padding: 0 18px;
+      padding: 0 16px;
     }
 
-    .back-link {
-      display: inline-block;
-      margin-bottom: 18px;
-      color: #176b45;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .checkout-card {
+    .panel {
       background: white;
-      border: 1px solid #e2e8df;
-      border-radius: 14px;
-      padding: 24px;
-      margin-bottom: 20px;
+      padding: 25px;
+      margin-bottom: 22px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000c;
     }
 
     h2 {
+      color: #167d45;
       margin-bottom: 16px;
-      color: #176b45;
+      font-size: 21px;
     }
 
-    .form-group { margin-bottom: 17px; }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5ece6;
+    }
+
+    .item small {
+      display: block;
+      color: #657368;
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 21px;
+      font-weight: bold;
+      margin-top: 18px;
+    }
 
     label {
       display: block;
-      margin-bottom: 6px;
       font-weight: bold;
+      margin: 15px 0 6px;
     }
 
     input, textarea {
       width: 100%;
       padding: 12px;
-      border: 1px solid #b8cbb9;
-      border-radius: 8px;
-      font-size: 15px;
+      border: 1px solid #cbd8ce;
+      border-radius: 7px;
+      font-size: 16px;
       font-family: inherit;
     }
 
     textarea {
-      resize: vertical;
       min-height: 100px;
+      resize: vertical;
     }
 
-    button {
-      background: #176b45;
-      color: white;
+    button, .back-link {
+      display: inline-block;
       border: none;
-      border-radius: 8px;
+      border-radius: 7px;
       padding: 13px 18px;
-      font-size: 15px;
+      background: #167d45;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: none;
       cursor: pointer;
+      margin-top: 18px;
     }
-
-    button:hover { background: #105435; }
 
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .order-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 12px 0;
-      border-bottom: 1px solid #e2e8df;
+    .back-link {
+      background: #e7f2e9;
+      color: #167d45;
+      margin-left: 8px;
     }
 
-    .total {
-      font-size: 21px;
-      font-weight: bold;
-      margin-top: 18px;
-    }
-
-    .note {
-      color: #657368;
-      font-size: 13px;
-      margin-top: 12px;
-    }
-
-    .message {
+    #message {
       margin-top: 15px;
       font-weight: bold;
       overflow-wrap: anywhere;
     }
 
-    .success { color: #176b45; }
-    .error { color: #b42318; }
+    .success {
+      color: #167d45;
+    }
 
-    footer {
-      background: #173e2c;
-      color: white;
-      text-align: center;
-      padding: 22px;
-      margin-top: 40px;
+    .error {
+      color: #b42318;
+    }
+
+    .empty {
+      color: #657368;
+      padding: 10px 0;
     }
 
     @media (max-width: 500px) {
-      .checkout-card { padding: 18px; }
+      .panel {
+        padding: 18px;
+      }
+
+      .back-link {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>🛍️ Pakkathukadai</h1>
-    <p>Secure and simple local shopping</p>
+    <h1>🛍️ Pakkathu Kadai</h1>
+    <p>Complete your order</p>
   </header>
 
   <main>
-    <a class="back-link" href="index.html">← Back to shopping</a>
+    <section class="panel">
+      <h2>🧺 Order Summary</h2>
+      <div id="orderItems">
+        <p class="empty">Loading your cart...</p>
+      </div>
 
-    <section class="checkout-card">
-      <h2>📦 Your Order Summary</h2>
-      <div id="orderItems">Loading your cart...</div>
-
-      <p class="total">
-        Total: ₹<span id="orderTotal">0.00</span>
-      </p>
-
-      <p class="note">
-        Check your items and quantities before placing your order.
-      </p>
+      <div class="total">
+        <span>Total</span>
+        <span>₹<span id="orderTotal">0.00</span></span>
+      </div>
     </section>
 
-    <section class="checkout-card">
-      <h2>👤 Customer Details</h2>
+    <section class="panel">
+      <h2>📍 Delivery Details</h2>
 
       <form id="checkoutForm">
-        <div class="form-group">
-          <label for="customerName">Full Name *</label>
-          <input
-            id="customerName"
-            name="customerName"
-            type="text"
-            maxlength="100"
-            autocomplete="name"
-            required
-          >
-        </div>
+        <label for="customerName">Full Name</label>
+        <input
+          type="text"
+          id="customerName"
+          required
+          maxlength="100"
+          autocomplete="name"
+          placeholder="Enter your full name"
+        >
 
-        <div class="form-group">
-          <label for="phone">Phone Number *</label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            inputmode="numeric"
-            pattern="[0-9]{10}"
-            maxlength="10"
-            placeholder="10-digit mobile number"
-            autocomplete="tel"
-            required
-          >
-        </div>
+        <label for="phone">Mobile Number</label>
+        <input
+          type="tel"
+          id="phone"
+          required
+          inputmode="numeric"
+          pattern="[0-9]{10}"
+          maxlength="10"
+          autocomplete="tel"
+          placeholder="10-digit mobile number"
+        >
 
-        <div class="form-group">
-          <label for="address">Delivery Address *</label>
-          <textarea
-            id="address"
-            name="address"
-            maxlength="500"
-            autocomplete="street-address"
-            placeholder="House number, street, area, city and PIN code"
-            required
-          ></textarea>
-        </div>
+        <label for="address">Delivery Address</label>
+        <textarea
+          id="address"
+          required
+          maxlength="1000"
+          autocomplete="street-address"
+          placeholder="Enter your complete delivery address"
+        ></textarea>
 
-        <button id="submitButton" type="submit">
+        <button type="submit" id="placeOrderButton">
           Place Order
         </button>
 
-        <p id="message" class="message" role="status" aria-live="polite"></p>
+        <a href="index.html" class="back-link">
+          Back to Shopping
+        </a>
 
-        <p class="note">
-          This saves your order details. Online payment is not included.
-        </p>
+        <p id="message" role="status" aria-live="polite"></p>
       </form>
     </section>
   </main>
-
-  <footer>
-    Supporting Local. Building Community.
-    <br>
-    © 2026 Pakkathukadai
-  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -235,25 +224,35 @@
       "https://qjywimxvejnkfbatukut.supabase.co";
 
     const SUPABASE_KEY =
-      "sb_publishable_GXCZjhC8Y-bsq9AwngaAQ_nQziTHu6";
+      "sb_publishable_GXCZjh_C8Y-bsq9AwngaAQ_nQziTHu6";
 
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
-    const orderItemsElement = document.getElementById("orderItems");
-    const orderTotalElement = document.getElementById("orderTotal");
-    const messageElement = document.getElementById("message");
-    const form = document.getElementById("checkoutForm");
-    const submitButton = document.getElementById("submitButton");
+    const orderItemsElement =
+      document.getElementById("orderItems");
+
+    const orderTotalElement =
+      document.getElementById("orderTotal");
+
+    const checkoutForm =
+      document.getElementById("checkoutForm");
+
+    const placeOrderButton =
+      document.getElementById("placeOrderButton");
+
+    const messageElement =
+      document.getElementById("message");
 
     let checkoutItems = [];
-    let cartIsValid = false;
+    let total = 0;
+    let orderSubmitted = false;
 
     function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, function(character) {
-        const entities = {
+      return String(value ?? "").replace(/[&<>"']/g, function(char) {
+        const replacements = {
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
@@ -261,130 +260,108 @@
           "'": "&#39;"
         };
 
-        return entities[character];
+        return replacements[char];
       });
     }
 
-    function getTotal() {
-      return checkoutItems.reduce(function(sum, item) {
-        return sum + item.subtotal;
-      }, 0);
-    }
-
-    function loadCheckoutCart() {
+    function loadCheckout() {
       try {
-        const savedCart = sessionStorage.getItem("pakkathuCart");
-        const savedProducts = sessionStorage.getItem("pakkathuProducts");
+        const savedCart = JSON.parse(
+          sessionStorage.getItem("pakkathuCart") || "{}"
+        );
 
-        if (!savedCart || !savedProducts) {
-          throw new Error("Cart data is missing.");
-        }
-
-        const cart = JSON.parse(savedCart);
-        const products = JSON.parse(savedProducts);
+        const savedProducts = JSON.parse(
+          sessionStorage.getItem("pakkathuProducts") || "[]"
+        );
 
         if (
-          !cart ||
-          typeof cart !== "object" ||
-          Array.isArray(cart) ||
-          !Array.isArray(products)
+          !savedCart ||
+          typeof savedCart !== "object" ||
+          !Array.isArray(savedProducts)
         ) {
           throw new Error("Invalid cart data.");
         }
 
-        const items = [];
+        checkoutItems = Object.keys(savedCart)
+          .map(function(id) {
+            const product = savedProducts.find(function(item) {
+              return String(item.id) === String(id);
+            });
 
-        for (const [id, rawQuantity] of Object.entries(cart)) {
-          const quantity = Number(rawQuantity);
+            const quantity = Number(savedCart[id]);
 
-          if (!Number.isInteger(quantity) || quantity < 0) {
-            throw new Error("Invalid cart quantity.");
-          }
+            if (
+              !product ||
+              !Number.isInteger(quantity) ||
+              quantity <= 0 ||
+              !Number.isFinite(Number(product.price))
+            ) {
+              return null;
+            }
 
-          if (quantity === 0) continue;
+            const price = Number(product.price);
 
-          const product = products.find(function(item) {
-            return String(item.id) === String(id);
-          });
+            return {
+              id: product.id,
+              name: product.name,
+              shop: product.shop_name || product.shop || "Local Store",
+              price: price,
+              quantity: quantity,
+              subtotal: price * quantity
+            };
+          })
+          .filter(Boolean);
 
-          if (!product) {
-            throw new Error("A cart product could not be found.");
-          }
+        total = checkoutItems.reduce(function(sum, item) {
+          return sum + item.subtotal;
+        }, 0);
 
-          const price = Number(product.price);
-          const stock = Number(product.quantity);
-
-          if (
-            !Number.isFinite(price) ||
-            price < 0 ||
-            !Number.isFinite(stock) ||
-            quantity > stock ||
-            !product.name
-          ) {
-            throw new Error("A product's price or available stock is invalid.");
-          }
-
-          items.push({
-            id: product.id,
-            name: String(product.name),
-            shop: String(product.shop_name || product.shop || "Local Shop"),
-            price: price,
-            quantity: quantity,
-            subtotal: price * quantity
-          });
-        }
-
-        checkoutItems = items;
-        cartIsValid = checkoutItems.length > 0;
-        renderOrderSummary();
+        renderOrder();
       } catch (error) {
-        console.error("Unable to load checkout cart:", error);
+        console.error("Checkout loading error:", error);
 
         checkoutItems = [];
-        cartIsValid = false;
-        orderItemsElement.textContent =
-          "Your cart is empty or unavailable. Return to shopping.";
-        orderTotalElement.textContent = "0.00";
-      }
+        total = 0;
 
-      submitButton.disabled = !cartIsValid;
+        orderItemsElement.innerHTML =
+          '<p class="empty">Could not load your cart. Please return to shopping.</p>';
+
+        orderTotalElement.textContent = "0.00";
+        placeOrderButton.disabled = true;
+      }
     }
 
-    function renderOrderSummary() {
-      if (!cartIsValid) {
-        orderItemsElement.textContent = "Your cart is empty.";
+    function renderOrder() {
+      if (checkoutItems.length === 0) {
+        orderItemsElement.innerHTML =
+          '<p class="empty">Your cart is empty. Please add products first.</p>';
+
         orderTotalElement.textContent = "0.00";
+        placeOrderButton.disabled = true;
         return;
       }
 
       orderItemsElement.innerHTML = checkoutItems.map(function(item) {
         return `
-          <div class="order-item">
+          <div class="item">
             <div>
               <strong>${escapeHTML(item.name)}</strong>
-              <br>
               <small>${escapeHTML(item.shop)}</small>
-              <br>
-              ${item.quantity} × ₹${item.price.toFixed(2)}
+              <small>₹${item.price.toFixed(2)} × ${item.quantity}</small>
             </div>
             <strong>₹${item.subtotal.toFixed(2)}</strong>
           </div>
         `;
       }).join("");
 
-      orderTotalElement.textContent = getTotal().toFixed(2);
+      orderTotalElement.textContent = total.toFixed(2);
+      placeOrderButton.disabled = false;
     }
 
-    function showMessage(message, type) {
-      messageElement.textContent = message;
-      messageElement.className = "message " + type;
-    }
-
-    form.addEventListener("submit", async function(event) {
+    checkoutForm.addEventListener("submit", async function(event) {
       event.preventDefault();
 
-      if (!cartIsValid || checkoutItems.length === 0) {
-        showMessage("Your cart is empty. Return to shopping first.", "error");
+      if (orderSubmitted || checkoutItems.length === 0) {
         return;
       }
 
@@ -397,87 +374,78 @@
       const address =
         document.getElementById("address").value.trim();
 
-      if (!customerName || customerName.length > 100) {
-        showMessage("Enter a valid customer name.", "error");
+      if (!customerName || !/^[0-9]{10}$/.test(phone) || !address) {
+        messageElement.className = "error";
+        messageElement.textContent =
+          "Please enter your name, a valid 10-digit mobile number, and address.";
         return;
       }
 
-      if (!/^[0-9]{10}$/.test(phone)) {
-        showMessage("Enter a valid 10-digit phone number.", "error");
-        return;
-      }
-
-      if (!address || address.length > 500) {
-        showMessage("Enter a valid delivery address.", "error");
-        return;
-      }
-
-      const total = getTotal();
-
-      if (!Number.isFinite(total) || total < 0) {
-        showMessage("The order total is invalid.", "error");
-        return;
-      }
-
-      const order = {
-        customer_name: customerName,
-        phone: phone,
-        delivery_address: address,
-        items: checkoutItems.map(function(item) {
-          return {
-            product_id: item.id,
-            name: item.name,
-            shop: item.shop,
-            price: item.price,
-            quantity: item.quantity,
-            subtotal: item.subtotal
-          };
-        }),
-        total: Number(total.toFixed(2)),
-        status: "pending"
-      };
-
-      submitButton.disabled = true;
-      submitButton.textContent = "Saving Order...";
-      showMessage("Submitting your order...", "");
+      placeOrderButton.disabled = true;
+      messageElement.className = "";
+      messageElement.textContent = "Placing your order...";
 
       try {
-        const { error } = await supabaseClient
+        const order = {
+          customer_name: customerName,
+          phone: phone,
+          delivery_address: address,
+          items: checkoutItems.map(function(item) {
+            return {
+              product_id: item.id,
+              name: item.name,
+              shop: item.shop,
+              price: item.price,
+              quantity: item.quantity,
+              subtotal: item.subtotal
+            };
+          }),
+          total: Number(total.toFixed(2)),
+          status: "pending"
+        };
+
+        const { data, error } = await supabaseClient
           .from("orders")
-          .insert([order]);
+          .insert([order])
+          .select("id")
+          .single();
 
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
 
-        showMessage(
-          "Order placed successfully! Your order total is ₹" +
-          total.toFixed(2) +
-          ". Status: Pending.",
-          "success"
-        );
+        orderSubmitted = true;
 
         sessionStorage.removeItem("pakkathuCart");
         sessionStorage.removeItem("pakkathuProducts");
 
-        checkoutItems = [];
-        cartIsValid = false;
-        orderItemsElement.textContent = "Your order has been submitted.";
-        orderTotalElement.textContent = "0.00";
-        form.reset();
-      } catch (error) {
-        console.error("Order submission failed:", error);
+        messageElement.className = "success";
+        messageElement.textContent =
+          "Order placed successfully!" +
+          (data && data.id ? " Order ID: " + data.id : "") +
+          " Thank you for shopping with Pakkathu Kadai.";
 
-        showMessage(
-          "Could not save your order. " +
-          (error.message || "Please try again."),
-          "error"
-        );
-      } finally {
-        submitButton.textContent = "Place Order";
-        submitButton.disabled = !cartIsValid;
+        orderItemsElement.innerHTML =
+          '<p class="success">Your order has been recorded.</p>';
+
+        orderTotalElement.textContent = total.toFixed(2);
+        checkoutForm.reset();
+
+        placeOrderButton.textContent = "Order Placed";
+
+      } catch (error) {
+        console.error("Order submission error:", error);
+
+        messageElement.className = "error";
+        messageElement.textContent =
+          "Could not place your order. " +
+          (error.message || "Please check your Supabase permissions and try again.");
+
+        placeOrderButton.disabled = false;
       }
     });
 
-    loadCheckoutCart();
+    loadCheckout();
   </script>
 </body>
 </html>
